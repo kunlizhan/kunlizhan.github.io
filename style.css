@@ -42,24 +42,57 @@ body {
 #main {
   text-align: center;
 }
-#main div {
+#main .btn {
+  text-align: left;
   display: inline-block;
   width: 24%;
   height: 2em;
   max-width: 13em;
-  padding: 0.8em 0 0 0;
-  background: radial-gradient(#000, #000d, #0000 60%);
-  /* border: solid; */
-  border-radius: 0.5em;
   overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  max-width: inherit;
+  z-index: -2;
+  background: radial-gradient(#000, #000d, #0000 60%);
+  opacity: 1;
   transition: opacity 0.5s;
 }
-#main div:hover {
-  /* background: radial-gradient(#fdbf, #fa0d, #fa00 60%);
+.btn:hover::before {
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  max-width: inherit;
+  z-index: -1;
+  background: radial-gradient(#fdbf, #fa0d, #fa00 60%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+.btn:hover::after {
+  opacity: 1;
+  transition: opacity 0.5s;
+}
+.btn div {
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  max-width: inherit;
+  text-align: center;
+  padding: 0.3em 0 0 0;
+  transition: color 0.5s;
+}
+.btn div:hover {
   color: #200;
-  font-weight: bold; */
-  opacity: 0.1;
-  transition: opacity 0.5s, color 2s, font-weight 2s;
+  transition: color 0.5s;
 }
 .center-div
 {
