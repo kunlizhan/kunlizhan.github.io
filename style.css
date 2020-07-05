@@ -1,3 +1,12 @@
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
 html {
   background: url(img/PIA03653_large.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
@@ -29,4 +38,37 @@ body {
   margin: 0 0 0 0;
   font-size: 1.5em;
   font-weight: normal;
+}
+#main {
+  text-align: center;
+}
+#main div {
+  display: inline-block;
+  width: 24%;
+  height: 2em;
+  max-width: 13em;
+  padding: 0.8em 0 0 0;
+  background: radial-gradient(#000, #000d, #0000 60%);
+  /* border: solid; */
+  border-radius: 0.5em;
+  overflow: hidden;
+  transition: opacity 0.5s;
+}
+#main div:hover {
+  /* background: radial-gradient(#fdbf, #fa0d, #fa00 60%);
+  color: #200;
+  font-weight: bold; */
+  opacity: 0.1;
+  transition: opacity 0.5s, color 2s, font-weight 2s;
+}
+.center-div
+{
+  margin: 0 auto;
+  width: 100px;
+  height: 100px;
+  background-color: #ccc;
+  border-radius: 3px;
+
+  border-width: 1px;
+  border-color: #fff;
 }
