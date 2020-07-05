@@ -1,0 +1,32 @@
+html {
+  background: url(img/PIA03653_large.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+body {
+  color: #fff;
+  margin: 0 0 0 0;
+}
+.vp {
+}
+.title {
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  font-weight: normal;
+  padding: 3em 0 4em 0;
+  background: linear-gradient(to bottom, #000 50%, #0000 100%);
+  background-size: cover;
+}
+
+.title h1 {
+  font-size: 3em;
+  font-weight: normal;
+  margin: 0 0 0 0;
+}
+.title h2 {
+  margin: 0 0 0 0;
+  font-size: 1.5em;
+  font-weight: normal;
+}
