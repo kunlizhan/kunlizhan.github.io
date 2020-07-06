@@ -73,7 +73,7 @@ body {
   opacity: 1;
   transition: opacity 0.5s;
 }
-#nav .btn {
+#nav > .btn {
   text-align: left;
   display: inline-block;
   width: 24%;
@@ -112,7 +112,7 @@ body {
   opacity: 1;
   transition: opacity 0.5s;
 }
-.btn div {
+.btn > div {
   position: absolute;
   width: inherit;
   height: inherit;
@@ -125,20 +125,50 @@ body {
   font-weight: 500;
   transition: color 0.5s;
 }
-.btn div:hover {
+.btn > div:hover {
   color: #000;
   font-weight: 500;
   transition: color 0.5s;
 }
 #main {
-  margin: 10vh 0 0 0;
+  margin: 10vh 0.5em 0 0.5em;
+  display: grid;
+  column-gap: 0.5em;
+  row-gap: 0.5em;
+  justify-items: center;
+  align-items: start;
 }
-#main div {
-  display: inline-block;
-  margin: 0.5em 0em 0 0em;
-  padding: 1em;
+@media (min-width: 60em) {
+  #main {
+    grid-template-columns: 1fr 1fr;
+  }
+  #main > div:first-of-type {
+    grid-area: 1 / 1 / 2 / 3;
+    max-width: none;
+    font-size: 1.2em;
+  }
+}
+@media (min-width: 90em) {
+  #main {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  #main > div:first-of-type {
+    grid-area: 1 / 1 / 2 / 3;
+    max-width: none;
+    font-size: 1.2em;
+  }
+}
+#main > div {
   border-radius: 1em;
-  max-width: 52em;
-  text-align: left;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
   background-color: #0038;
+}
+#main > div > div {
+  display: inline-block;
+  margin: 1.5em 1em 1.5em 1em;
+  max-width: 48em;
+  text-align: left;
 }
