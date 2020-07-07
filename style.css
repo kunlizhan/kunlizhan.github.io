@@ -38,10 +38,16 @@ body {
 #bg {
   position: fixed;
   z-index: -10;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: -20vh;
+  left: -20vw;
+  height: 140vh;
+  width: 140vw;
+
+  background: url(img/bg.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 #bg img {
   position: absolute;
@@ -49,7 +55,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  margin: auto;
+  margin: auto auto auto auto;
   min-width: 50%;
   min-height: 50%;
 }
