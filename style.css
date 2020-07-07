@@ -42,22 +42,17 @@ body {
   left: -20vw;
   height: 140vh;
   width: 140vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  background: url(img/bg.jpg) no-repeat center center fixed;
+  /*background: url(img/bg.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-size: cover;
+  background-size: cover;*/
 }
 #bg img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto auto auto auto;
-  min-width: 50%;
-  min-height: 50%;
 }
 
 .vp {
