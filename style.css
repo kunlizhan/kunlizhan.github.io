@@ -61,15 +61,17 @@ body {
   font-family: 'Cinzel', serif;
   text-align: center;
   font-weight: normal;
-  padding: 3em 0 4em 0;
   background: linear-gradient(to bottom, #000 50%, #0000 100%);
   background-size: cover;
 }
-
+.title > .blank:first-of-type {
+  height: 5vw;
+}
 .title h1 {
   margin: 0 0 0 0;
   font-size: 3em;
   font-weight: normal;
+  line-height: 1; /* normal: 1.37 */
   background: -webkit-linear-gradient(#36a, #acf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -79,6 +81,9 @@ body {
   font-size: 1.5em;
   font-weight: normal;
   color: #fff;
+}
+.title > .blank:last-of-type {
+  height: 2vw;
 }
 #nav {
 }
@@ -136,8 +141,12 @@ body {
   color: #000;
   transition: color 0.5s;
 }
+#vp > .blank {
+  height: 5vw;
+  min-height: 5vh;
+}
 #main {
-  margin: 10vh auto 0 auto;
+  margin: 0 auto 0 auto;
   padding: 0 0.5em 0 0.5em;
   display: grid;
   column-gap: 0.5em;
@@ -185,8 +194,9 @@ body {
   text-align: left;
 }
 @media (min-width: 50em) {
-  .title h2 {
-    /*color: red;*/
+  .title {
+    /*color: red;
+    padding: 3em 0 4em 0;*/
   }
   #main {
     grid-template-columns: 1fr 0.62fr 1fr;
