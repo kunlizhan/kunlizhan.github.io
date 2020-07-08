@@ -193,6 +193,9 @@ body {
   padding: 1.5em 1em 0.5em 1em;
   text-align: left;
 }
+.text img {
+  max-width: 100%;
+}
 @media (min-width: 50em) {
   .title {
     /*color: red;

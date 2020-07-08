@@ -25,9 +25,11 @@ $('.btn').hover(
 
 function loadHomeFeed() {
   $.getJSON("post/list.json", function(list) {
-    console.log("test");
+    let i = 0;
     for (const post of list) {
-      console.log(post.title);
+      $(`#main div:nth-child(${i+1}) > .text`).load(`post/${post.content}`);
+      $(`#main > div:nth-child(${i+1})`).attr(`path`, `post/${post.content}`);
+      i++;
     }
   });
 }
