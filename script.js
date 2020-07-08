@@ -24,8 +24,11 @@ $('.btn').hover(
 );
 
 function loadHomeFeed() {
-  $.getJSON("post/list.json", function(json) {
-    console.log(json); // this will show the info it in firebug console
+  $.getJSON("post/list.json", function(list) {
+    console.log("test");
+    for (const post of list) {
+      console.log(post.title);
+    }
   });
 }
 loadHomeFeed();
