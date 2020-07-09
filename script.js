@@ -46,8 +46,8 @@ function loadHomeFeed() {
 }
 loadHomeFeed();
 
-window.addEventListener('popstate', (event) => {
-  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+window.addEventListener('popstate', (e) => {
+  console.log("location: " + document.location.search);
   e.preventDefault();
 });
 console.log("location: " + document.location.search);
