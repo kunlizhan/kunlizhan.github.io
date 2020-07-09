@@ -50,7 +50,7 @@ window.addEventListener('popstate', (event) => {
   console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
   e.preventDefault();
 });
-
+console.log("location: " + document.location.search);
 /*function makeReadMore() {
   $("#main > div").append(
     `<div class="readMore"><div>
