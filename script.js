@@ -24,7 +24,7 @@ function loadHomeFeed() {
           <div class="text"></div>
           <div class="readMore">
             <div>
-            <a href="/post/${post.content}">
+            <a href="/?post/${post.content}">
             <i class="fa fa-file-text" aria-hidden="true"></i> Full article</a>
              &emsp14;
             <a href="">
@@ -38,7 +38,7 @@ function loadHomeFeed() {
       i++;
     }
     $(`.readMore a`).click(function(e) {
-      e.preventDefault();
+      //e.preventDefault();
       history.pushState({page: $(this).attr('href')}, "title 1", $(this).attr('href'));
       }
     );
@@ -46,7 +46,10 @@ function loadHomeFeed() {
 }
 loadHomeFeed();
 
-
+window.addEventListener('popstate', (event) => {
+  console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
+  e.preventDefault();
+});
 
 /*function makeReadMore() {
   $("#main > div").append(
