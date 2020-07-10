@@ -8,8 +8,9 @@ html {
 body {
   color: #cef;
   margin: 0 0 0 0;
-  font-family: "Arial", sans-serif;
+  font-family: "Verdana", "Arial", sans-serif;
 }
+
 /* utility classes */
 .noselect {
   -webkit-touch-callout: none; /* iOS Safari */
@@ -55,8 +56,6 @@ body {
 #bg img {
 }
 
-.vp {
-}
 .title {
   font-family: 'Cinzel', serif;
   text-align: center;
@@ -75,12 +74,14 @@ body {
   background: -webkit-linear-gradient(#36a, #acf);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  cursor: pointer;
 }
 .title h2 {
   margin: 0 0 0 0;
   font-size: 1.5em;
   font-weight: normal;
   color: #fff;
+  cursor: pointer;
 }
 .title > .blank:last-of-type {
   height: 2vw;
@@ -134,7 +135,8 @@ body {
 
   padding: 0.4em 0 0 0;
   color: #6af;
-  font-family: "Verdana", sans-serif;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
   transition: color 0.5s;
 }
 .btn > .text:hover {
@@ -146,15 +148,21 @@ body {
   min-height: 5vh;
 }
 #main {
+  max-width: 90em;
   margin: 0 auto 0 auto;
-  padding: 0 0.5em 0 0.5em;
+  padding: 0 0.5em 1em 0.5em;
+}
+
+/* ?home */
+
+.newsfeed {
   display: grid;
   column-gap: 0.5em;
   row-gap: 0.5em;
   justify-content: center;
   align-items: start;
 }
-#main > div {
+.newsfeed > .post-thumb {
   position: relative;
   border-radius: 1em;
   background-color: rgba(0,0,51,0.5);
@@ -178,23 +186,19 @@ body {
   bottom: 0.5em;
   width: 100%;
   text-align: center;
-  color: #6af;
   font-size: 0.8em;
 }
 .readMore:hover {
   background: linear-gradient(#0000 0%, #115f 70%);
 }
-.readMore:hover > div {
-  color: #bdf;
-}
-#main > div > .text {
+.newsfeed > .post-thumb > .text {
   display: inline-block;
   max-height: 28em;
   overflow: hidden;
   padding: 1.5em 1em 0.5em 1em;
   text-align: left;
 }
-.text img {
+#main img {
   max-width: 100%;
 }
 @media (min-width: 50em) {
@@ -202,49 +206,101 @@ body {
     /*color: red;
     padding: 3em 0 4em 0;*/
   }
-  #main {
+  .newsfeed {
     grid-template-columns: 1fr 0.62fr 1fr;
   }
-  #main > div {
+  .newsfeed > div {
     width: 100%;
     height: 100%;
   }
-  #main > div:nth-of-type(4n+2) {
+  .newsfeed > div:nth-of-type(4n+2) {
     /*color: red;*/
   }
-  #main > div:nth-of-type(4n) {
+  .newsfeed > div:nth-of-type(4n) {
     grid-column: 1 / span 2;
     /*color: orange;*/
   }
-  #main > div:nth-of-type(4n+3) {
+  .newsfeed > div:nth-of-type(4n+3) {
     grid-column: 2 / span 2;
     /*color: blue;*/
   }
-  #main > div:nth-of-type(4n+1) {
+  .newsfeed > div:nth-of-type(4n+1) {
     /*color: cyan;*/
   }
-  #main > div:first-of-type {
+  .newsfeed > div:first-of-type {
     grid-area: 1 / 1 / 2 / 4;
   }
 }
 @media (min-width: 70em) {
-  #main {
+  .newsfeed {
     grid-template-columns: 1fr 0.62fr 1fr;
-    max-width: 90em;
   }
-  #main > div:nth-of-type(4n+2) {
+  .newsfeed > div:nth-of-type(4n+2) {
     /*color: red;*/
   }
-  #main > div:nth-of-type(4n) {
+  .newsfeed > div:nth-of-type(4n) {
     grid-column: 2 / span 2;
     /*color: orange;*/
   }
-  #main > div:nth-of-type(4n+3) {
+  .newsfeed > div:nth-of-type(4n+3) {
     grid-column: 1 / span 1;
     /*color: blue;*/
   }
-  #main > div:nth-of-type(4n+1) {
+  .newsfeed > div:nth-of-type(4n+1) {
     grid-column: 1 / span 2;
     /*color: cyan;*/
   }
+}
+
+/* ?post */
+
+.post, .post-thumb {
+  border-style: solid none none none;
+  border-color: #44c;
+  border-radius: 1em;
+  background-color: rgba(0,0,51,0.5);
+  background-color: #0038;
+  text-align: left;
+}
+.post {
+  padding: 0.1em 1em 1.5em 1em;
+}
+.post h1, .post-thumb h1 {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-family: 'Ubuntu', serif;
+  font-weight: 300;
+  color: #eef0ff;
+}
+.post-thumb h1 {
+  margin: 0 0 0 0;
+}
+.post-thumb h1 a {
+  text-decoration: none;
+}
+.post hr, .post-thumb hr {
+  width: 62%;
+  border: none;
+  border-top: 0.2em solid #44c;
+  border-radius: 1em;
+}
+.post img,
+.post-thumb > .text img {
+  display: block;
+  margin: 1em auto 1em auto;
+  border-style: solid none none none;
+  border-color: #44c;
+  border-radius: 1em;
+}
+
+/* site-wide styles */
+a {
+  color: #6af;
+}
+a:hover {
+  color: #bdf;
+}
+.error {
+  background: rgba(100,20,20,0.5);
+  color: #f66;
 }
