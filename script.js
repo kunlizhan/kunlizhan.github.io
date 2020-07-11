@@ -14,7 +14,7 @@ $('.btn').hover(
   }
 );
 
-var index = [];
+var index = {'post': []};
 function make_index() {
   $.getJSON("index.json", function(data) {
     index = data;
@@ -36,10 +36,10 @@ function parseQuery() {
     case "?philosophy":
       break;
     case "?post":
-      load_post(parsed_path[1]);
+      get_post(parsed_path[1]);
       break;
     default:
-      load_post("intentional_miss.html");
+      get_post("intentional_miss.html");
   }
 }
 
@@ -50,18 +50,18 @@ function ajaxA(e, a) {
 }
 
 function load_Home() {
-  $.getJSON("post/list.json", function(data) {
+  if (typeof index.post !== 'undefined' && index.post.length > 0) {
     $(`#main`).html(`<div class="newsfeed"></div>`);
     let i = 0;
-    for (const post of data) {
+    for (const post of index.post) {
       let newPost = `
         <div class="post-thumb">
-          <div class="text"></div>
+          <div class="content"></div>
           <div class="readMore">
             <div>
             <a href="/?post/${post.content}">
             <i class="fa fa-file-text" aria-hidden="true"></i> Full article</a>
-             &emsp14;
+             &emsp14; &emsp14;
             <a href="/?post/${post.content}#comments">
             <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
             </div>
@@ -69,33 +69,69 @@ function load_Home() {
         </div>
       `;
       $(`#main > .newsfeed`).prepend(newPost);
-      $(`.newsfeed > .post-thumb:first-child > .text`).load(`/post/${post.content}.html`, function() {
-        $(this).prepend(`<h1><a href="/?post/${post.content}">${post.title}</a></h1><hr>`);
-        $(this).children(`h1`).children(`a`).click( function(e) {ajaxA(e, $(this));} );
-      });
+      load_post_content($(`.newsfeed > .post-thumb:first-child > .content`), post.content, true);
       i++;
     }
     $(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
-  });
+  } else {
+    $.getJSON("post/list.json", function(data) {
+      index.post = data;
+      console.log("got postlist, trying again");
+      load_Home();
+    });
+  }
 }
 
-function load_post(filename) {
+function get_post(filename) {
   filename = filename.split('.')[0];
-  let title = '';
+  if (typeof index.post !== 'undefined' && index.post.length > 0) {
+    $(`#main`).html(`<div class="post"><div class="content"></div></div>`);
+    load_post_content($(`#main > .post > .content`), filename);
+  } else {
+    $.getJSON("post/list.json", function(data) {
+      index.post = data;
+      console.log("got postlist, trying again");
+      get_post(filename);
+    });
+  }
+}
 
-  $(`#main`).html(`<div class="post"></div>`);
-  $(`.post`).load(`/post/${filename}.html`, function( response, status, xhr ) {
+function load_post_content(contentDiv, filename, isThumb) {
+  isThumb = isThumb || 0;
+  let path = `/post/${filename}.html`;
+  contentDiv.load(path, function( response, status, xhr ) {
     if ( status == "error" ) {
-      let msg = "Unable to load page.";
-      $(`.post`).addClass(`error`);
-      $(`.post`).html(`${msg} <br><br> ${xhr.status}: ${xhr.statusText}`);
+      let msg = "<br>Unable to load page.";
+      $(this).parent().addClass(`error`);
+      $(this).html(`${msg} <br><br> ${xhr.status}: ${xhr.statusText}`);
     } else {
-      $.getJSON("post/list.json", function(data) {
-        for (const post of data) {
-          if (filename == post.content) {
-            $(`.post`).prepend(`<h1>${post.title}</h1><hr><br>`);
-          }
+      let date = new Date();
+      let title = "";
+      for (const post of index.post) {
+        if (post.content == filename) {
+          title = post.title;
+          date = new Date(post.date * 1000);
+          console.log(date);
+          break;
         }
+      }
+      $(this).prepend(
+        `
+        <div class="metainfo">
+          <i class="fa fa-calendar" aria-hidden="true"></i> Published <div class="date">${date.toDateString()}</div>
+          &emsp14; &emsp14; <i class="fa fa-book" aria-hidden="true"></i> Reading time: <div class="eta"></div>
+        </div>
+        <br>
+        `
+      );
+      if (isThumb) {
+        $(this).prepend(`<h1><a href="/?post/${filename}">${title}</a></h1><hr>`);
+        $(this).children(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
+      } else {
+        $(this).prepend(`<h1>${title}</h1><hr>`);
+      }
+      $(this).readingTime({
+        readingTimeTarget: $(this).find(".metainfo > .eta"),
       });
     }
   });
@@ -107,4 +143,4 @@ window.addEventListener('popstate', (e) => {
 });
 console.log("location: " + document.location.search);
 parseQuery();
-$(`.title h1, .title h2`).click( function(e) {ajaxA(e, $(this));} );
+$(`.title a`).click( function(e) {ajaxA(e, $(this));} );
