@@ -261,17 +261,13 @@ body {
 
 /* ?post */
 
-.post, .post-thumb {
-  border-style: solid none none none;
-  border-width: thick;
-  border-color: #44c;
-  border-radius: 1em;
-  background-color: rgba(0,0,51,0.5);
-  background-color: #0038;
-  text-align: left;
+.post {
+  margin-bottom: 0.8em;
 }
 .post > .content {
+  display: inline-block;
   padding: 0.1em 1em 1.5em 1em;
+  text-align: left;
 }
 .content h1 {
   text-align: center;
@@ -296,12 +292,33 @@ body {
   width: 100%;
   text-align: center;
   font-size: 0.8em;
+  color: #88f;
 }
 .date, .eta {
   display: inline;
 }
 
+/* comments plugin */
+
+#comment-container {
+  display: inline-block;
+  position: relative;
+  width: 100%;
+}
+#comment-container iframe {
+  width: 100%;
+}
 /* site-wide styles */
+
+.base-container {
+  border-style: solid none none none;
+  border-width: thick;
+  border-color: #44c;
+  border-radius: 1em;
+  background-color: rgba(0,0,51,0.5);
+  background-color: #003a;
+  text-align: center;
+}
 a {
   color: #6af;
 }

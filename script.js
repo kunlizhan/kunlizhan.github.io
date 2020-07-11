@@ -55,7 +55,7 @@ function load_Home() {
     let i = 0;
     for (const post of index.post) {
       let newPost = `
-        <div class="post-thumb">
+        <div class="post-thumb base-container">
           <div class="content"></div>
           <div class="readMore">
             <div>
@@ -85,7 +85,13 @@ function load_Home() {
 function get_post(filename) {
   filename = filename.split('.')[0];
   if (typeof index.post !== 'undefined' && index.post.length > 0) {
-    $(`#main`).html(`<div class="post"><div class="content"></div></div>`);
+    $(`#main`).html(`
+      <div class="post base-container"><div class="content"></div></div>
+      <div class="base-container">
+        <div id="comment-container">
+        </div>
+      </div>
+      `);
     load_post_content($(`#main > .post > .content`), filename);
   } else {
     $.getJSON("post/list.json", function(data) {
@@ -118,8 +124,10 @@ function load_post_content(contentDiv, filename, isThumb) {
       $(this).prepend(
         `
         <div class="metainfo">
-          <i class="fa fa-calendar" aria-hidden="true"></i> Published <div class="date">${date.toDateString()}</div>
-          &emsp14; &emsp14; <i class="fa fa-book" aria-hidden="true"></i> Reading time: <div class="eta"></div>
+          <i class="fa fa-calendar" aria-hidden="true"></i>
+          <div class="date">${date.toDateString()}</div>
+          &emsp14; &emsp14; <i class="fa fa-clock-o" aria-hidden="true"></i>
+          Reading time: <div class="eta"></div>
         </div>
         <br>
         `
@@ -129,6 +137,22 @@ function load_post_content(contentDiv, filename, isThumb) {
         $(this).children(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
       } else {
         $(this).prepend(`<h1>${title}</h1><hr>`);
+        //Comments
+        let w = $(`#comment-container`).width();
+        console.log("comm width: "+w);
+        if (320 > w ) {
+          w = "100%"
+        } else if ( w > 550) {
+          w = 550;
+        }
+        console.log("comm width: "+w);
+        $(`#comment-container`).html(`
+          <div class="fb-comments"
+            data-href="https://kunlizhan.com/?post/${filename}"
+            data-numposts="5" data-width="${w}"
+            data-colorscheme="dark"></div>
+        `);
+        FB.XFBML.parse(document.getElementById('comment-container'));
       }
       $(this).readingTime({
         readingTimeTarget: $(this).find(".metainfo > .eta"),
@@ -136,6 +160,25 @@ function load_post_content(contentDiv, filename, isThumb) {
     }
   });
 }
+
+var a = null;
+$(window).resize(function(){
+    if(a != null) {
+        clearTimeout(a);
+    }
+    let w = $(`#comment-container`).width();
+    console.log("comm width: "+w);
+    if (320 > w ) {
+      w = "100%"
+    } else if ( w > 550) {
+      w = 550;
+    }
+    console.log("comm width: "+w);
+    $(`#comment-container > .fb-comments`).attr('data-width', w);
+    a = setTimeout(function(){
+        FB.XFBML.parse(document.getElementById('comment-container'));
+    },1000)
+})
 
 window.addEventListener('popstate', (e) => {
   console.log("location: " + document.location.search);
