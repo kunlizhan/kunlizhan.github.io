@@ -300,12 +300,12 @@ body {
 
 /* comments plugin */
 
-#comment-container {
+#comments {
   display: inline-block;
   position: relative;
   width: 100%;
 }
-#comment-container iframe {
+#comments iframe {
   width: 100%;
 }
 /* site-wide styles */

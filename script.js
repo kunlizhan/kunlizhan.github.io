@@ -82,29 +82,31 @@ function load_Home() {
   }
 }
 
-function get_post(filename) {
-  filename = filename.split('.')[0];
+function get_post(name) {
   if (typeof index.post !== 'undefined' && index.post.length > 0) {
     $(`#main`).html(`
       <div class="post base-container"><div class="content"></div></div>
       <div class="base-container">
-        <div id="comment-container">
+        <div id="comments">
         </div>
       </div>
       `);
-    load_post_content($(`#main > .post > .content`), filename);
+    load_post_content($(`#main > .post > .content`), name);
   } else {
     $.getJSON("post/list.json", function(data) {
       index.post = data;
       console.log("got postlist, trying again");
-      get_post(filename);
+      get_post(name);
     });
   }
 }
 
-function load_post_content(contentDiv, filename, isThumb) {
+function load_post_content(contentDiv, name, isThumb) {
+  //split name and frag
+  name = name.split('.')[0];
   isThumb = isThumb || 0;
-  let path = `/post/${filename}.html`;
+  let path = `/post/${name}.html`;
+
   contentDiv.load(path, function( response, status, xhr ) {
     if ( status == "error" ) {
       let msg = "<br>Unable to load page.";
@@ -114,7 +116,7 @@ function load_post_content(contentDiv, filename, isThumb) {
       let date = new Date();
       let title = "";
       for (const post of index.post) {
-        if (post.content == filename) {
+        if (post.content == name) {
           title = post.title;
           date = new Date(post.date * 1000);
           console.log(date);
@@ -133,30 +135,35 @@ function load_post_content(contentDiv, filename, isThumb) {
         `
       );
       if (isThumb) {
-        $(this).prepend(`<h1><a href="/?post/${filename}">${title}</a></h1><hr>`);
-        $(this).children(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
+        $(this).prepend(`<h1><a href="/?post/${name}">${title}</a></h1><hr>`);
+        $(this).find(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
       } else {
         $(this).prepend(`<h1>${title}</h1><hr>`);
         //Comments
-        let w = $(`#comment-container`).width();
-        console.log("comm width: "+w);
+        let w = $(`#comments`).width();
         if (320 > w ) {
           w = "100%"
         } else if ( w > 550) {
           w = 550;
         }
-        console.log("comm width: "+w);
-        $(`#comment-container`).html(`
+        $(`#comments`).html(`
           <div class="fb-comments"
-            data-href="https://kunlizhan.com/?post/${filename}"
+            data-href="https://kunlizhan.com/?post/${name}"
             data-numposts="5" data-width="${w}"
             data-colorscheme="dark"></div>
         `);
-        FB.XFBML.parse(document.getElementById('comment-container'));
+        FB.XFBML.parse(document.getElementById('comments'));
       }
       $(this).readingTime({
         readingTimeTarget: $(this).find(".metainfo > .eta"),
       });
+
+      // fragment, hash
+      if (typeof location.hash !== 'undefined' && location.hash !== '') {
+        let id = location.hash.split('#')[1];
+        console.log(id);
+        document.getElementById(id).scrollIntoView();
+      }
     }
   });
 }
@@ -166,17 +173,15 @@ $(window).resize(function(){
     if(a != null) {
         clearTimeout(a);
     }
-    let w = $(`#comment-container`).width();
-    console.log("comm width: "+w);
+    let w = $(`#comments`).width();
     if (320 > w ) {
       w = "100%"
     } else if ( w > 550) {
       w = 550;
     }
-    console.log("comm width: "+w);
-    $(`#comment-container > .fb-comments`).attr('data-width', w);
+    $(`#comments > .fb-comments`).attr('data-width', w);
     a = setTimeout(function(){
-        FB.XFBML.parse(document.getElementById('comment-container'));
+        FB.XFBML.parse(document.getElementById('comments'));
     },1000)
 })
 
