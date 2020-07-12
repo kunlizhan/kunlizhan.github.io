@@ -24,7 +24,10 @@ function make_index() {
 
 function parseQuery() {
   let q = document.location.search;
-  let parsed_path = q.split('/');
+  const regex = /%2F/gi;
+  let parsed_path = q.replace(regex, '/');
+  console.log(parsed_path);
+  parsed_path = parsed_path.split('/');
 
   switch (parsed_path[0].toLowerCase()) {
     case "":
