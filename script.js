@@ -51,7 +51,7 @@ function parseQuery() {
         get_post(parsed_path[1]);
         break;
       default:
-        get_post("intentional_miss.html");
+        get_post("not_found");
     }
   }
 }
@@ -180,9 +180,11 @@ function load_post_content(contentDiv, name, isThumb) {
         }
         $(`#comments`).html(`
           <div class="fb-comments"
-            data-href="https://kunlizhan.com/?post/${name}/"
-            data-numposts="5" data-width="${w}"
-            data-colorscheme="dark"></div>
+            data-href="https://kunlizhan.com/?post/${name}"
+            data-numposts="5"
+            data-width="${w}"
+            data-colorscheme="dark"
+            data-mobile="true"></div>
         `);
         FB.XFBML.parse(document.getElementById('comments'));
       }

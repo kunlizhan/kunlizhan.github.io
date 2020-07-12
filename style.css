@@ -315,6 +315,9 @@ body {
   width: 100%;
   min-height: 178px;
 }
+#comments > .fb-comments {
+  max-width: 550px;
+}
 /* site-wide styles */
 
 .base-container {
