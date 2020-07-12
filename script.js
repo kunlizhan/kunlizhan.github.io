@@ -150,11 +150,10 @@ function load_post_content(contentDiv, name, isThumb) {
         }
         $(`#comments`).html(`
           <div class="fb-comments"
-            data-href="https://kunlizhan.com/"
+            data-href="https://kunlizhan.com/?post/${name}/"
             data-numposts="5" data-width="${w}"
             data-colorscheme="dark"></div>
         `);
-        //?post/${name}
         FB.XFBML.parse(document.getElementById('comments'));
       }
       $(this).readingTime({
