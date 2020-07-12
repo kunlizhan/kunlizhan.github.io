@@ -25,7 +25,6 @@ function make_index() {
 function parseQuery() {
   let q = document.location.search;
   let parsed_path = q.split('/');
-  console.log(parsed_path);
 
   switch (parsed_path[0].toLowerCase()) {
     case "":
@@ -53,7 +52,11 @@ function load_Home() {
   if (typeof index.post !== 'undefined' && index.post.length > 0) {
     $(`#main`).html(`<div class="newsfeed"></div>`);
     let i = 0;
-    for (const post of index.post) {
+    let by_date = index.post.sort(function (a, b) {
+      return a.date - b.date;
+    })
+    by_date.slice(0, 6);
+    for (const post of by_date) {
       let newPost = `
         <div class="post-thumb base-container">
           <div class="content"></div>
@@ -119,7 +122,6 @@ function load_post_content(contentDiv, name, isThumb) {
         if (post.content == name) {
           title = post.title;
           date = new Date(post.date * 1000);
-          console.log(date);
           break;
         }
       }
@@ -161,7 +163,6 @@ function load_post_content(contentDiv, name, isThumb) {
       // fragment, hash
       if (typeof location.hash !== 'undefined' && location.hash !== '') {
         let id = location.hash.split('#')[1];
-        console.log(id);
         document.getElementById(id).scrollIntoView();
       }
     }
@@ -169,21 +170,21 @@ function load_post_content(contentDiv, name, isThumb) {
 }
 
 var a = null;
-$(window).resize(function(){
+/*$(window).resize(function(){
     if(a != null) {
         clearTimeout(a);
     }
-    let w = $(`#comments`).width();
-    if (320 > w ) {
-      w = "100%"
-    } else if ( w > 550) {
-      w = 550;
-    }
-    $(`#comments > .fb-comments`).attr('data-width', w);
     a = setTimeout(function(){
+        let w = $(`#comments`).width();
+        if (320 > w ) {
+          w = "100%"
+        } else if ( w > 550) {
+          w = 550;
+        }
+        $(`#comments > .fb-comments`).attr('data-width', w);
         FB.XFBML.parse(document.getElementById('comments'));
     },1000)
-})
+})*/
 
 window.addEventListener('popstate', (e) => {
   console.log("location: " + document.location.search);

@@ -192,7 +192,7 @@ body {
   display: inline-block;
   max-height: 28em;
   overflow: hidden;
-  padding: 0.5em 1em 0.5em 1em;
+  padding: 0.5em 1em 2em 1em;
   text-align: left;
 }
 .post-thumb > .content h1 {
@@ -212,28 +212,28 @@ body {
   .newsfeed {
     grid-template-columns: 1fr 0.62fr 1fr;
   }
-  .newsfeed > div {
+  .newsfeed > .post-thumb {
     width: 100%;
     height: 100%;
   }
-  .newsfeed > div:nth-of-type(4n+2) {
+  .newsfeed > .post-thumb:nth-of-type(4n+2) {
     /*color: red;*/
   }
-  .newsfeed > div:nth-of-type(4n) {
+  .newsfeed > .post-thumb:nth-of-type(4n) {
     grid-column: 1 / span 2;
     /*color: orange;*/
   }
-  .newsfeed > div:last-of-type {
+  .newsfeed > .post-thumb:last-of-type {
     grid-column: 1 / span 3;
   }
-  .newsfeed > div:nth-of-type(4n+3) {
+  .newsfeed > .post-thumb:nth-of-type(4n+3) {
     grid-column: 2 / span 2;
     /*color: blue;*/
   }
-  .newsfeed > div:nth-of-type(4n+1) {
+  .newsfeed > .post-thumb:nth-of-type(4n+1) {
     /*color: cyan;*/
   }
-  .newsfeed > div:first-of-type {
+  .newsfeed > .post-thumb:first-of-type {
     grid-column: 1 / span 3;
   }
 }
@@ -241,19 +241,19 @@ body {
   .newsfeed {
     grid-template-columns: 1fr 0.62fr 1fr;
   }
-  .newsfeed > div:nth-of-type(4n+2) {
+  .newsfeed > .post-thumb:nth-of-type(4n+2) {
     grid-column: 3 / span 1;
     /*color: red;*/
   }
-  .newsfeed > div:nth-of-type(4n) {
+  .newsfeed > .post-thumb:nth-of-type(4n) {
     grid-column: 2 / span 2;
     /*color: orange;*/
   }
-  .newsfeed > div:nth-of-type(4n+3) {
+  .newsfeed > .post-thumb:nth-of-type(4n+3) {
     grid-column: 1 / span 1;
     /*color: blue;*/
   }
-  .newsfeed > div:nth-of-type(4n+1) {
+  .newsfeed > .post-thumb:nth-of-type(4n+1) {
     grid-column: 1 / span 2;
     /*color: cyan;*/
   }
@@ -304,9 +304,7 @@ body {
   display: inline-block;
   position: relative;
   width: 100%;
-}
-#comments iframe {
-  width: 100%;
+  min-height: 178px;
 }
 /* site-wide styles */
 
@@ -328,4 +326,8 @@ a:hover {
 .error {
   background: rgba(100,20,20,0.5);
   color: #f66;
+}
+img.hbar {
+  border-style: none;
+  margin: 0 auto 0 auto;
 }

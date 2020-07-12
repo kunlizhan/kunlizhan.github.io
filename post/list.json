@@ -2,11 +2,19 @@
   {
     "title": "Sanctum Ephemeralis",
     "date": 1594007678,
-    "content": "sanctum_ephemeralis"
+    "content": "sanctum_ephemeralis",
+    "tags": [ "writing", "poetry" ]
   },
   {
     "title": "Version 4 and how we got here",
     "date": 1594162259,
-    "content": "version_4_and_how"
+    "content": "version_4_and_how",
+    "tags": [ "web", "tech" ]
+  },
+  {
+    "title": "Cloudscape",
+    "date": 1430113860,
+    "content": "cloudscape",
+    "tags": [ "animation", "film" ]
   }
 ]
