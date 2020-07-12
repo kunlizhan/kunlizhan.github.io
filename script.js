@@ -27,7 +27,8 @@ function parseQuery() {
   const slash = /%2F/gi;
   let parsed_path = q;
   parsed_path = parsed_path.replace(slash, '/');
-  parsed_path = parsed_path.split('fbclid')[0];
+  const breakers = /&|fbclid/i;
+  parsed_path = parsed_path.split(breakers)[0];
   console.log(parsed_path);
   //check if we're already on the same query
   if (parsed_path == last_q) {
