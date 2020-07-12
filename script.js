@@ -159,6 +159,11 @@ function load_post_content(contentDiv, name, isThumb) {
       } else {
         //for full post, make title and insert into metainfo a link to comments
         $(this).prepend(`<h1>${title}</h1><hr>`);
+        $(`title`).html(`${title}`);
+        $(`meta[property="og:url"]`).attr(`content`, `kunlizhan.com/${last_q}`);
+        $(`meta[property="og:title"]`).attr(`content`, `${title}`);
+        $(`meta[property="og:type"]`).attr(`content`, `article`);
+        $(`meta[property="og:description"]`).attr(`content`, `${date.toDateString()}`);
         $(`.metainfo`).append(`
           <div class="metaitem">
           <a href="#comments">
