@@ -21,7 +21,7 @@ function make_index() {
   });
 }
 //make_index();
-var last_q = "";
+var last_q = null;
 function parseQuery() {
   let q = document.location.search;
   const slash = /%2F/gi;
@@ -31,7 +31,7 @@ function parseQuery() {
   parsed_path = parsed_path.split(breakers)[0];
   console.log(parsed_path);
   //check if we're already on the same query
-  if (parsed_path == last_q) {
+  if (parsed_path === last_q) {
     //scroll to the element
     let id = location.hash.split('#')[1];
     document.getElementById(id).scrollIntoView();
