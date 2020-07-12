@@ -21,27 +21,37 @@ function make_index() {
   });
 }
 //make_index();
-
+var last_q = "";
 function parseQuery() {
   let q = document.location.search;
-  const regex = /%2F/gi;
-  let parsed_path = q.replace(regex, '/');
+  const slash = /%2F/gi;
+  let parsed_path = q;
+  parsed_path = parsed_path.replace(slash, '/');
+  parsed_path = split('fbclid')[0];
   console.log(parsed_path);
-  parsed_path = parsed_path.split('/');
+  //check if we're already on the same query
+  if (parsed_path == last_q) {
+    //scroll to the element
+    let id = location.hash.split('#')[1];
+    document.getElementById(id).scrollIntoView();
+  } else {
+    last_q = parsed_path;
+    parsed_path = parsed_path.split('/');
 
-  switch (parsed_path[0].toLowerCase()) {
-    case "":
-    case "?":
-    case "?home":
-      load_Home();
-      break;
-    case "?philosophy":
-      break;
-    case "?post":
-      get_post(parsed_path[1]);
-      break;
-    default:
-      get_post("intentional_miss.html");
+    switch (parsed_path[0].toLowerCase()) {
+      case "":
+      case "?":
+      case "?home":
+        load_Home();
+        break;
+      case "?philosophy":
+        break;
+      case "?post":
+        get_post(parsed_path[1]);
+        break;
+      default:
+        get_post("intentional_miss.html");
+    }
   }
 }
 
@@ -91,13 +101,12 @@ function load_Home() {
 function get_post(name) {
   if (typeof index.post !== 'undefined' && index.post.length > 0) {
     $(`#main`).html(`
-      <div class="post base-container"><div class="content"></div></div>
-      <div class="base-container">
-        <div id="comments">
-        </div>
+      <div class="post-wrap">
+        <div class="post base-container"><div class="content"></div></div>
+        <div id="comments" class="base-container"></div>
       </div>
       `);
-    load_post_content($(`#main > .post > .content`), name);
+    load_post_content($(`#main > .post-wrap > .post > .content`), name);
   } else {
     $.getJSON("post/list.json", function(data) {
       index.post = data;
@@ -115,7 +124,7 @@ function load_post_content(contentDiv, name, isThumb) {
 
   contentDiv.load(path, function( response, status, xhr ) {
     if ( status == "error" ) {
-      let msg = "<br>Unable to load page.";
+      let msg = `<br>Unable to load post "${name}".`;
       $(this).parent().addClass(`error`);
       $(this).html(`${msg} <br><br> ${xhr.status}: ${xhr.statusText}`);
     } else {
@@ -140,10 +149,17 @@ function load_post_content(contentDiv, name, isThumb) {
         `
       );
       if (isThumb) {
+        //for thumb, make title a link
         $(this).prepend(`<h1><a href="/?post/${name}">${title}</a></h1><hr>`);
         $(this).find(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
       } else {
+        //for full post, make title and insert into metainfo a link to comments
         $(this).prepend(`<h1>${title}</h1><hr>`);
+        $(`.metainfo`).append(`
+          <a href="#comments">
+          <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
+        `);
+        $(`.metainfo > a`).click( function(e) {ajaxA(e, $(this));} );
         //Comments
         let w = $(`#comments`).width();
         if (320 > w ) {
@@ -167,6 +183,10 @@ function load_post_content(contentDiv, name, isThumb) {
       if (typeof location.hash !== 'undefined' && location.hash !== '') {
         let id = location.hash.split('#')[1];
         document.getElementById(id).scrollIntoView();
+        if (id == 'comments') {
+          //give comments time to load, then scroll again
+          setTimeout(function(){ document.getElementById(id).scrollIntoView(); }, 2000);
+        }
       }
     }
   });

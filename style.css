@@ -151,9 +151,6 @@ body {
   min-height: 5vh;
 }
 #main {
-  max-width: 90em;
-  margin: 0 auto 0 auto;
-  padding: 0 0.5em 1em 0.5em;
 }
 
 /* ?home */
@@ -164,6 +161,9 @@ body {
   row-gap: 0.8em;
   justify-content: center;
   align-items: start;
+  max-width: 90em;
+  margin: 0 auto 0 auto;
+  padding: 0 0.5em 1em 0.5em;
 }
 .newsfeed > .post-thumb {
   position: relative;
@@ -260,13 +260,20 @@ body {
 }
 
 /* ?post */
-
+.post-wrap {
+  max-width: 70em;
+  margin: 0 auto 0 auto;
+  padding: 0 0.5em 1em 0.5em;
+  text-align: center;
+}
 .post {
   margin-bottom: 0.8em;
+  width: 100%;
 }
 .post > .content {
   display: inline-block;
   padding: 0.1em 1em 1.5em 1em;
+  max-width: 70em;
   text-align: left;
 }
 .content h1 {
@@ -301,7 +308,6 @@ body {
 /* comments plugin */
 
 #comments {
-  display: inline-block;
   position: relative;
   width: 100%;
   min-height: 178px;
@@ -309,6 +315,7 @@ body {
 /* site-wide styles */
 
 .base-container {
+  display: inline-block;
   border-style: solid none none none;
   border-width: thick;
   border-color: #44c;
