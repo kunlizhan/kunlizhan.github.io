@@ -301,8 +301,11 @@ body {
   font-size: 0.8em;
   color: #88f;
 }
-.date, .eta {
-  display: inline;
+.metaitem, .eta {
+  display: inline-block;
+}
+.metaitem {
+  margin: 0 0.5em 0 0.5em;
 }
 
 /* comments plugin */
@@ -320,7 +323,7 @@ body {
   border-width: thick;
   border-color: #44c;
   border-radius: 1em;
-  background-color: rgba(0,0,51,0.5);
+  background-color: rgba(0,0,51,0.6);
   background-color: #003a;
   text-align: center;
 }
@@ -331,7 +334,7 @@ a:hover {
   color: #bdf;
 }
 .error {
-  background: rgba(100,20,20,0.5);
+  background: rgba(100,20,20,0.6);
   color: #f66;
 }
 img.hbar {

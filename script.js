@@ -141,10 +141,13 @@ function load_post_content(contentDiv, name, isThumb) {
       $(this).prepend(
         `
         <div class="metainfo">
-          <i class="fa fa-calendar" aria-hidden="true"></i>
-          <div class="date">${date.toDateString()}</div>
-          &emsp14; &emsp14; <i class="fa fa-clock-o" aria-hidden="true"></i>
-          Reading time: <div class="eta"></div>
+          <div class="metaitem">
+            <i class="fa fa-calendar" aria-hidden="true"></i> ${date.toDateString()}
+          </div>
+          <div class="metaitem">
+            <i class="fa fa-clock-o" aria-hidden="true"></i>
+            Reading time: <div class="eta"></div>
+          </div>
         </div>
         <br>
         `
@@ -157,8 +160,10 @@ function load_post_content(contentDiv, name, isThumb) {
         //for full post, make title and insert into metainfo a link to comments
         $(this).prepend(`<h1>${title}</h1><hr>`);
         $(`.metainfo`).append(`
+          <div class="metaitem">
           <a href="#comments">
           <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
+          </div>
         `);
         $(`.metainfo > a`).click( function(e) {ajaxA(e, $(this));} );
         //Comments
@@ -177,7 +182,7 @@ function load_post_content(contentDiv, name, isThumb) {
         FB.XFBML.parse(document.getElementById('comments'));
       }
       $(this).readingTime({
-        readingTimeTarget: $(this).find(".metainfo > .eta"),
+        readingTimeTarget: $(this).find(".eta"),
       });
 
       // fragment, hash
