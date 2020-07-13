@@ -14,13 +14,12 @@ $('.btn').hover(
   }
 );
 
-var index = {'post': []};
-function make_index() {
-  $.getJSON("index.json", function(data) {
-    index = data;
-  });
+function ajaxA(e, a) {
+  e.preventDefault();
+  history.pushState({}, "", a.attr('href'));
+  parseQuery();
 }
-//make_index();
+
 var last_q = null;
 function parseQuery() {
   let q = document.location.search;
@@ -45,21 +44,32 @@ function parseQuery() {
       case "?home":
         load_Home();
         break;
-      case "?philosophy":
-        break;
       case "?post":
         get_post(parsed_path[1]);
         break;
       default:
-        get_post("not_found");
+        get_site(parsed_path[0]);
     }
   }
 }
 
-function ajaxA(e, a) {
-  e.preventDefault();
-  history.pushState({}, "", a.attr('href'));
-  parseQuery();
+function get_site(name) {
+  let path = name.replace('?', '');
+  path = `/site/${path}.html`;
+  $('#main').load(path, function( response, status, xhr ) {
+    if ( status == "error" ) {
+      let msg = `<br>Unable to load "${name}".`;
+      $('#main').html(`
+        <div class="base-container error">
+        ${msg} <br><br> ${xhr.status}: ${xhr.statusText}
+        <img src="img/hbar.gif" class="hbar">
+        </div>
+        `);
+      console.log("no such page");
+      console.log(path);
+    } else {
+    }
+  });
 }
 
 function load_Home() {
@@ -91,30 +101,21 @@ function load_Home() {
     }
     $(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
   } else {
-    $.getJSON("post/list.json", function(data) {
-      index.post = data;
-      console.log("got postlist, trying again");
-      load_Home();
-    });
+    console.log("no post list, trying again");
+    setTimeout(function(){
+      load_Home(name);
+    },1000)
   }
 }
 
 function get_post(name) {
-  if (typeof index.post !== 'undefined' && index.post.length > 0) {
-    $(`#main`).html(`
-      <div class="post-wrap">
-        <div class="post base-container"><div class="content"></div></div>
-        <div id="comments" class="base-container"></div>
-      </div>
-      `);
-    load_post_content($(`#main > .post-wrap > .post > .content`), name);
-  } else {
-    $.getJSON("post/list.json", function(data) {
-      index.post = data;
-      console.log("got postlist, trying again");
-      get_post(name);
-    });
-  }
+  $(`#main`).html(`
+    <div class="post-wrap">
+      <div class="post base-container"><div class="content"></div></div>
+      <div id="comments" class="base-container"></div>
+    </div>
+    `);
+  load_post_content($(`#main > .post-wrap > .post > .content`), name);
 }
 
 function load_post_content(contentDiv, name, isThumb) {
@@ -183,8 +184,7 @@ function load_post_content(contentDiv, name, isThumb) {
             data-href="https://kunlizhan.com/?post/${name}"
             data-numposts="5"
             data-width="${w}"
-            data-colorscheme="dark"
-            data-mobile="true"></div>
+            data-colorscheme="dark"></div>
         `);
         FB.XFBML.parse(document.getElementById('comments'));
       }
@@ -226,6 +226,8 @@ window.addEventListener('popstate', (e) => {
   console.log("location: " + document.location.search);
   parseQuery();
 });
-console.log("location: " + document.location.search);
-parseQuery();
-$(`.title a`).click( function(e) {ajaxA(e, $(this));} );
+$( document ).ready(function() {
+  console.log("location: " + document.location.search);
+  parseQuery();
+  $(`.title a`).click( function(e) {ajaxA(e, $(this));} );
+});

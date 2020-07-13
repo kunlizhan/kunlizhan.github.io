@@ -344,3 +344,11 @@ img.hbar {
   border-style: none;
   margin: 0 auto 0 auto;
 }
+q, blockquote {
+  color: #88f;
+  font-family: "Times", serif;
+  font-size: 1.05em;
+  quotes: '\201c' '\201d';
+}
+q:before, blockquote::before { content: open-quote; }
+q:after, blockquote::after  { content: close-quote; }
