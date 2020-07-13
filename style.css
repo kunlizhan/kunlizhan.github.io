@@ -55,7 +55,6 @@ body {
 }
 #bg img {
 }
-
 .title {
   font-family: 'Cinzel', serif;
   text-align: center;
@@ -90,6 +89,17 @@ body {
   height: 2vw;
 }
 #nav {
+  position: sticky;
+  top: 1em;
+  z-index: 1;
+}
+#nav > .btn > .text > span {
+  display: none;
+}
+@media (min-width: 40em) {
+  #nav > .btn > .text > span {
+    display: inline;
+  }
 }
 #nav::before {
   content: '';
@@ -105,12 +115,11 @@ body {
 #nav > .btn {
   text-align: left;
   display: inline-block;
-  width: 24%;
+  width: 19%;
   height: 2em;
   max-width: 13em;
   overflow: hidden;
 }
-
 .btn-bg-dark {
   position: absolute;
   width: inherit;
@@ -168,6 +177,7 @@ body {
 .newsfeed > .post-thumb {
   position: relative;
   overflow: hidden;
+  max-height: 28em;
   /* bg and color found farther down in .post, .post-thumb */
 }
 .readMore {
@@ -190,9 +200,8 @@ body {
 }
 .post-thumb > .content {
   display: inline-block;
-  max-height: 28em;
   overflow: hidden;
-  padding: 0.5em 1em 2em 1em;
+  padding: 0.5em 1em 3em 1em;
   text-align: left;
 }
 .post-thumb > .content h1 {
