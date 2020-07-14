@@ -1,7 +1,7 @@
 function makeBtnBg() {
-  $(".btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>');
+  $("#nav .btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>');
+  $("#nav a").click( function(e) {ajaxA(e, $(this));} );
 }
-makeBtnBg();
 
 $('.btn').hover(
   function() {
@@ -32,8 +32,8 @@ function parseQuery() {
   //check if we're already on the same query
   if (parsed_path === last_q) {
     //scroll to the element
-    let id = location.hash.split('#')[1];
-    document.getElementById(id).scrollIntoView();
+    /*let id = location.hash.split('#')[1];
+    document.getElementById(id).scrollIntoView();*/
   } else {
     last_q = parsed_path;
     parsed_path = parsed_path.split('/');
@@ -171,7 +171,6 @@ function load_post_content(contentDiv, name, isThumb) {
           <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
           </div>
         `);
-        $(`.metainfo > a`).click( function(e) {ajaxA(e, $(this));} );
         //Comments
         let w = $(`#comments`).width();
         if (320 > w ) {
@@ -230,4 +229,5 @@ $( document ).ready(function() {
   console.log("location: " + document.location.search);
   parseQuery();
   $(`.title a`).click( function(e) {ajaxA(e, $(this));} );
+  makeBtnBg();
 });
