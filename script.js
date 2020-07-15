@@ -163,7 +163,7 @@ function load_post_content(contentDiv, name, isThumb) {
           w = 550;
         }
         $(`#comments`).html(`
-          <span class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</span>
+          <div class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
           <div class="fb-comments"
             data-href="https://kunlizhan.com/?post/${name}"
             data-numposts="5"

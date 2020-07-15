@@ -2,9 +2,19 @@
 </div>
 <script>
   function populateArtVP(array) {
+    let parity = 0;
+    let imgClass = "even";
     for (const item of array) {
+      if (parity == 0) {
+        imgClass = "even";
+      } else {
+        imgClass = "odd";
+      }
+      parity = (parity + 1) % 2;
       let newPost = `
-        <img src="/img/${item.content}"/>
+        <a href="/img/${item.content}">
+          <img src="/img/${item.content}" class="${imgClass}"/>
+        </a>
       `;
       $(`#main > #art-vp`).append(newPost);
     }
