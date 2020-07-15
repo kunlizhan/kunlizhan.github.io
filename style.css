@@ -35,6 +35,7 @@ body {
   border-width: 1px;
   border-color: #fff;
 }
+
 /* layout */
 #bg {
   position: fixed;
@@ -190,7 +191,6 @@ nav a {
 }
 
 /* ?home */
-
 .newsfeed {
   display: grid;
   column-gap: 0.5em;
@@ -345,7 +345,6 @@ nav a {
 }
 
 /* comments plugin */
-
 #comments {
   position: relative;
   width: 100%;
@@ -354,8 +353,29 @@ nav a {
 #comments > .fb-comments {
   max-width: 550px;
 }
-/* site-wide styles */
 
+/* ?art */
+#art-vp {
+  margin: 0 auto 0 auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.img-thumb {
+}
+#art-vp > img {
+  height: 30vh;
+  max-height: 400px;
+  margin: 0.5vh;
+  object-fit: contain;
+  /*border-style: solid;
+  border-color: #44c;*/
+  border-radius: 2vh;
+  box-shadow: 0 0 1.2vh 0.4vh #66e;
+}
+
+/* site-wide styles */
 .base-container {
   display: inline-block;
   border-style: solid none none none;

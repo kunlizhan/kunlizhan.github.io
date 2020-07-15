@@ -1,17 +1,18 @@
 [
   {
     "title": "Animation",
-    "content": "animation",
-    "tags": [ "writing", "poetry" ]
+    "content": "animation"
   },
   {
-    "title": "Art",
-    "content": "art",
-    "tags": [ "web", "tech" ]
+    "title": "Art & Music",
+    "content": "art"
   },
   {
-    "title": "Music",
-    "content": "music",
-    "tags": [ "animation", "film" ]
+    "title": "Philosophy",
+    "content": "philosophy"
+  },
+  {
+    "title": "Miscellaneous",
+    "content": "misc"
   }
 ]

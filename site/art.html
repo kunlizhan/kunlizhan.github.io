@@ -1,1 +1,44 @@
-test
+<div class="art-vp">
+</div>
+<script>
+  function populateArtVP(array) {
+    for (const item of array) {
+      let newPost = `
+        <img src="/img/${item.content}"/>
+      `;
+      $(`#main > #art-vp`).append(newPost);
+    }
+    //$(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
+  }
+  function load_Art() {
+    if (
+      typeof index.img !== 'undefined'
+      && index.img.length > 0
+      &&typeof index.post !== 'undefined'
+      && index.post.length > 0 //add music later
+    )
+    {
+      $(`#main`).html(`<div id="art-vp"></div>`);
+      function non_site(img) {
+        for (const tag of img.tags) {
+          if (tag == "site-use" || tag == "no-show") {
+            return false;
+          }
+        }
+        return true;
+      }
+      let img_list = index.img.filter(non_site);
+      let by_date_reverse = img_list.sort(function (a, b) {
+        return b.date - a.date;
+      })
+      console.log(by_date_reverse);
+      populateArtVP(by_date_reverse);
+    } else {
+      console.log("no art or post list, trying again");
+      setTimeout(function(){
+        load_Art(name);
+      },1000)
+    }
+  }
+  load_Art();
+</script>

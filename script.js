@@ -53,53 +53,14 @@ function parseQuery() {
   }
 }
 
-function get_site(name) {
-  let path = name.replace('?', '');
-  path = `/site/${path}.html`;
-  $('#main').load(path, function( response, status, xhr ) {
-    if ( status == "error" ) {
-      let msg = `<br>Unable to load "${name}".`;
-      $('#main').html(`
-        <div class="base-container error">
-        ${msg} <br><br> ${xhr.status}: ${xhr.statusText}
-        <img src="img/hbar.gif" class="hbar">
-        </div>
-        `);
-      console.log("no such page");
-      console.log(path);
-    } else {
-    }
-  });
-}
-
 function load_Home() {
   if (typeof index.post !== 'undefined' && index.post.length > 0) {
     $(`#main`).html(`<div class="newsfeed"></div>`);
-    let i = 0;
-    let by_date = index.post.sort(function (a, b) {
-      return a.date - b.date;
+    let by_date_reverse = index.post.sort(function (a, b) {
+      return b.date - a.date;
     })
-    by_date.slice(0, 6);
-    for (const post of by_date) {
-      let newPost = `
-        <div class="post-thumb base-container">
-          <div class="content"></div>
-          <div class="readMore">
-            <div>
-            <a href="/?post/${post.content}">
-            <i class="fa fa-file-text" aria-hidden="true"></i> Full article</a>
-             &emsp14; &emsp14;
-            <a href="/?post/${post.content}#comments">
-            <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
-            </div>
-          </div>
-        </div>
-      `;
-      $(`#main > .newsfeed`).prepend(newPost);
-      load_post_content($(`.newsfeed > .post-thumb:first-child > .content`), post.content, true);
-      i++;
-    }
-    $(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
+    by_date_reverse.slice(0, 6);
+    populateFeed(by_date_reverse);
   } else {
     console.log("no post list, trying again");
     setTimeout(function(){
@@ -108,11 +69,33 @@ function load_Home() {
   }
 }
 
+function populateFeed(array) {
+  for (const post of array) {
+    let newPost = `
+      <div class="post-thumb base-container">
+        <div class="content"></div>
+        <div class="readMore">
+          <div>
+          <a href="/?post/${post.content}">
+          <i class="fa fa-file-text" aria-hidden="true"></i> Full article</a>
+           &emsp14; &emsp14;
+          <a href="/?post/${post.content}#comments">
+          <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
+          </div>
+        </div>
+      </div>
+    `;
+    $(`#main > .newsfeed`).append(newPost);
+    load_post_content($(`.newsfeed > .post-thumb:last-child > .content`), post.content, true);
+  }
+  $(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
+}
+
 function get_post(name) {
   $(`#main`).html(`
     <div class="post-wrap">
-      <div class="post base-container"><div class="content"></div></div>
-      <div id="comments" class="base-container"></div>
+      <div class="post base-container"><div class="content"> Loading ... </div></div>
+      <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
     </div>
     `);
   load_post_content($(`#main > .post-wrap > .post > .content`), name);
@@ -168,7 +151,8 @@ function load_post_content(contentDiv, name, isThumb) {
         $(`.metainfo`).append(`
           <div class="metaitem">
           <a href="#comments">
-          <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
+          <i class="fa fa-comments-o" aria-hidden="true"></i>
+           <span class="fb-comments-count" data-href="https://kunlizhan.com/?post/${name}"></span> Comments</a>
           </div>
         `);
         //Comments
@@ -179,13 +163,16 @@ function load_post_content(contentDiv, name, isThumb) {
           w = 550;
         }
         $(`#comments`).html(`
+          <span class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</span>
           <div class="fb-comments"
             data-href="https://kunlizhan.com/?post/${name}"
             data-numposts="5"
             data-width="${w}"
-            data-colorscheme="dark"></div>
+            data-colorscheme="dark"
+            data-lazy="true"
+            data-order-by="time"></div>
         `);
-        FB.XFBML.parse(document.getElementById('comments'));
+        FB.XFBML.parse(document.getElementById('main'));
       }
       $(this).readingTime({
         readingTimeTarget: $(this).find(".eta"),
@@ -204,27 +191,29 @@ function load_post_content(contentDiv, name, isThumb) {
   });
 }
 
-var a = null;
-/*$(window).resize(function(){
-    if(a != null) {
-        clearTimeout(a);
+function get_site(name) {
+  let path = name.replace('?', '');
+  path = `/site/${path}.html`;
+  $('#main').load(path, function( response, status, xhr ) {
+    if ( status == "error" ) {
+      let msg = `<br>Unable to load "${name}".`;
+      $('#main').html(`
+        <div class="base-container error">
+        ${msg} <br><br> ${xhr.status}: ${xhr.statusText}
+        <img src="img/hbar.gif" class="hbar">
+        </div>
+        `);
+      console.log("no such page");
+      console.log(path);
+    } else {
     }
-    a = setTimeout(function(){
-        let w = $(`#comments`).width();
-        if (320 > w ) {
-          w = "100%"
-        } else if ( w > 550) {
-          w = 550;
-        }
-        $(`#comments > .fb-comments`).attr('data-width', w);
-        FB.XFBML.parse(document.getElementById('comments'));
-    },1000)
-})*/
-
+  });
+}
 window.addEventListener('popstate', (e) => {
   console.log("location: " + document.location.search);
   parseQuery();
 });
+
 $( document ).ready(function() {
   console.log("location: " + document.location.search);
   parseQuery();

@@ -9,10 +9,12 @@
     function get_index() {
       $.getJSON("/site/list.json", function(data) {
         index.site = data;
-        $.getJSON("/post/list.json", function(data) {
-          index.post = data;
-          Object.freeze(index);
-        });
+      });
+      $.getJSON("/post/list.json", function(data) {
+        index.post = data;
+      });
+      $.getJSON("/img/list.json", function(data) {
+        index.img = data;
       });
     }
     get_index();
@@ -96,7 +98,7 @@
             </div>
           </div>
         </a>
-        <a href="/">
+        <a href="/?animation">
           <div class="btn">
             <div class="text noselect">
               <i class="fa fa-play-circle" aria-hidden="true"></i> <span>Animation</span>
@@ -112,7 +114,7 @@
         </a>
       </div>
       <div class="btn-group">
-        <a href="/">
+        <a href="/?philosophy">
           <div class="btn">
             <div class="text noselect">
               <i class="fa fa-book" aria-hidden="true"></i> <span>Philosophy</span>
