@@ -12,7 +12,7 @@
       }
       parity = (parity + 1) % 2;
       let newPost = `
-        <a href="/img/${item.content}">
+        <a href="#full_image=${item.content}">
           <img src="/img/${item.content}" class="${imgClass}"/>
         </a>
       `;
@@ -41,7 +41,6 @@
       let by_date_reverse = img_list.sort(function (a, b) {
         return b.date - a.date;
       })
-      console.log(by_date_reverse);
       populateArtVP(by_date_reverse);
     } else {
       console.log("no art or post list, trying again");
@@ -51,4 +50,5 @@
     }
   }
   load_Art();
+  parseFragment();
 </script>

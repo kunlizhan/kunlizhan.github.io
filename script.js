@@ -1,18 +1,19 @@
-function makeBtnBg() {
+function init_page() {
   $("#nav .btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>');
   $("#nav a").click( function(e) {ajaxA(e, $(this));} );
+  $(`.title a`).click( function(e) {ajaxA(e, $(this));} );
+  //$(`#ol > .close_x`).click( function(e) {ajaxA(e, $(this));} );
+  $('.btn').hover(
+    function() {
+      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(100,0);
+      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(100,1);
+    },
+    function() {
+      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(200,1);
+      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0);
+    }
+  )
 }
-
-$('.btn').hover(
-  function() {
-    $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(100,0);
-    $( this ).children(".btn-bg-light").stop(true,false).fadeTo(100,1);
-  },
-  function() {
-    $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(200,1);
-    $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0);
-  }
-);
 
 function ajaxA(e, a) {
   e.preventDefault();
@@ -28,12 +29,13 @@ function parseQuery() {
   parsed_path = parsed_path.replace(slash, '/');
   const breakers = /&|fbclid/i;
   parsed_path = parsed_path.split(breakers)[0];
-  console.log(parsed_path);
+  //console.log(parsed_path);
   //check if we're already on the same query
   if (parsed_path === last_q) {
     //scroll to the element
     /*let id = location.hash.split('#')[1];
     document.getElementById(id).scrollIntoView();*/
+    parseFragment();
   } else {
     last_q = parsed_path;
     parsed_path = parsed_path.split('/');
@@ -99,6 +101,8 @@ function get_post(name) {
     </div>
     `);
   load_post_content($(`#main > .post-wrap > .post > .content`), name);
+  // fragment, hash
+  parseFragment();
 }
 
 function load_post_content(contentDiv, name, isThumb) {
@@ -172,21 +176,11 @@ function load_post_content(contentDiv, name, isThumb) {
             data-lazy="true"
             data-order-by="time"></div>
         `);
-        FB.XFBML.parse(document.getElementById('main'));
+        if (fbLoaded) {FB.XFBML.parse(document.getElementById('main'));}
       }
       $(this).readingTime({
         readingTimeTarget: $(this).find(".eta"),
       });
-
-      // fragment, hash
-      if (typeof location.hash !== 'undefined' && location.hash !== '') {
-        let id = location.hash.split('#')[1];
-        document.getElementById(id).scrollIntoView();
-        if (id == 'comments') {
-          //give comments time to load, then scroll again
-          setTimeout(function(){ document.getElementById(id).scrollIntoView(); }, 2000);
-        }
-      }
     }
   });
 }
@@ -209,14 +203,56 @@ function get_site(name) {
     }
   });
 }
+
+function parseFragment() {
+  if (typeof location.hash !== 'undefined' && location.hash !== '') {
+    let id = location.hash.split('#')[1];
+    function tryScroll(id) {
+      try {
+        document.getElementById(id).scrollIntoView();
+      } catch (e) {
+        //console.log("no such id: "+id);
+      }
+    }
+    tryScroll(id);
+    if (id == 'comments') {
+      //give comments time to load, then scroll again
+      setTimeout(function(){ tryScroll(id); }, 2000);
+    }
+    let arg = id.split('=')[1];
+    id = id.split('=')[0];
+    let ol_on = false;
+    switch (id) {
+      case 'comments':
+        setTimeout(function(){ tryScroll(id); }, 2000);
+        break;
+      case 'full_image':
+        ol_on = true;
+        showImgOverlay(arg);
+      default:
+    }
+    if (!ol_on) {
+      $(`#ol`).removeClass(`active`);
+    }
+  } else {
+    $(`#ol`).removeClass(`active`); //turn off ol if there is no hash, as ol should only be on with #full_image
+  }
+}
+function showImgOverlay(path) {
+  $(`#ol-img img`).remove();
+  $(`#ol-img`).append(`
+    <img src="/img/${path}">
+  `);
+  $(`#ol`).addClass(`active`);
+}
+
 window.addEventListener('popstate', (e) => {
-  console.log("location: " + document.location.search);
+  console.log("history popstate event fired");
   parseQuery();
 });
 
 $( document ).ready(function() {
-  console.log("location: " + document.location.search);
+  console.log("Ready, location: " + document.location.search);
   parseQuery();
-  $(`.title a`).click( function(e) {ajaxA(e, $(this));} );
-  makeBtnBg();
+  init_page();
 });
