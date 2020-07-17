@@ -49,6 +49,9 @@ function parseQuery() {
       case "?post":
         get_post(parsed_path[1]);
         break;
+      case "?show":
+        show_media(parsed_path[1]);
+        break;
       default:
         get_site(parsed_path[0]);
     }
@@ -63,6 +66,7 @@ function load_Home() {
     })
     by_date_reverse.slice(0, 6);
     populateFeed(by_date_reverse);
+    $(`title`).html(`KunliZhan.com`);
   } else {
     console.log("no post list, trying again");
     setTimeout(function(){
@@ -204,6 +208,59 @@ function get_site(name) {
   });
 }
 
+function show_media(name) {
+  if (
+    typeof index.img !== 'undefined'
+    && index.img !== '' //add more media here
+  ) {
+    for (item of index.img) {
+      item_name = item.content.split('.')[0];
+      if (name == item_name) {
+        let can_show = true;
+        for (tag of item.tags) {
+          if (tag == "site-use" || tag == "no-show") {
+            can_show = false;
+          }
+        }
+        if (can_show) {
+          let title = item.title;
+          let date = new Date(item.date * 1000);
+          $('#main').html(`
+            <div class="show-wrap">
+              <div class="show-title base-container">
+                <h1>${title}</h1>
+                <hr>
+                <div class="metainfo">
+                  <div class="metaitem">
+                    <i class="fa fa-calendar" aria-hidden="true"></i> ${date.toDateString()}
+                  </div>
+                </div>
+              </div>
+              <div class="show-media base-container">
+                <a href="#full_image=${item.content}">
+                  <img src="/img/${item.content}" />
+                </a>
+              </div>
+              <div class="show-desc base-container">
+                ${item.tags}
+              </div>
+              <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
+            </div>
+          `);
+          parseFragment();
+          $(`title`).html(`${title} | Kunli Zhan`);
+          break;
+        }
+      }
+    }
+  } else {
+    console.log("at least one media list missing, trying again");
+    setTimeout(function(){
+      show_media(name);
+    },1000)
+  }
+}
+
 function parseFragment() {
   if (typeof location.hash !== 'undefined' && location.hash !== '') {
     let id = location.hash.split('#')[1];
@@ -228,7 +285,12 @@ function parseFragment() {
         break;
       case 'full_image':
         ol_on = true;
-        showImgOverlay(arg);
+        showImgOverlay(arg, 'full_image');
+        break;
+      case 'preview':
+        ol_on = true;
+        showImgOverlay(arg, 'preview');
+        break;
       default:
     }
     if (!ol_on) {
@@ -238,11 +300,23 @@ function parseFragment() {
     $(`#ol`).removeClass(`active`); //turn off ol if there is no hash, as ol should only be on with #full_image
   }
 }
-function showImgOverlay(path) {
-  $(`#ol-img img`).remove();
+function showImgOverlay(path, type) {
+  type = type || 0;
+  console.log(type);
+  $(`#ol-img a`).remove();
+  let path_to_show = `#_`;
+  if (type == 'preview') {
+    path_to_show = `/?show/${path.split('.')[0]}`;
+  }
   $(`#ol-img`).append(`
-    <img src="/img/${path}">
+    <a href="${path_to_show}">
+      <img src="/img/${path}" alt="Click for details">
+    </a>
   `);
+  $(`#ol-img a`).click( function(e) {
+    $(`#ol`).removeClass(`active`);
+    ajaxA(e, $(this));
+  } );
   $(`#ol`).addClass(`active`);
 }
 

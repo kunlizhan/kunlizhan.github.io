@@ -1,5 +1,6 @@
 <div class="art-vp">
 </div>
+<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
 <script>
   function populateArtVP(array) {
     let parity = 0;
@@ -11,14 +12,16 @@
         imgClass = "odd";
       }
       parity = (parity + 1) % 2;
+      //<a href="#preview=${item.content}">
+      let path_to_show = `/?show/${item.content.split('.')[0]}#top`;
       let newPost = `
-        <a href="#full_image=${item.content}">
+        <a href="${path_to_show}">
           <img src="/img/${item.content}" class="${imgClass}"/>
         </a>
       `;
       $(`#main > #art-vp`).append(newPost);
     }
-    //$(`.readMore a`).click( function(e) {ajaxA(e, $(this));} );
+    $(`#main > #art-vp a`).click( function(e) {ajaxA(e, $(this));} );
   }
   function load_Art() {
     if (
@@ -51,4 +54,5 @@
   }
   load_Art();
   parseFragment();
+  $(`title`).html(`Art and Music | Kunli Zhan`);
 </script>

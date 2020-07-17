@@ -15,6 +15,7 @@
         return b.date - a.date;
       })
       populateFeed(by_date_reverse);
+      $(`title`).html(`Animation | Kunli Zhan`);
     } else {
       console.log("no post list for anim, trying again");
       setTimeout(function(){
