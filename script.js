@@ -13,6 +13,7 @@ function init_page() {
       $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0);
     }
   )
+  $(`.close_ol`).click( function(e) {e.preventDefault(); history.back();} );
 }
 
 function ajaxA(e, a) {
@@ -164,23 +165,8 @@ function load_post_content(contentDiv, name, isThumb) {
           </div>
         `);
         //Comments
-        let w = $(`#comments`).width();
-        if (320 > w ) {
-          w = "100%"
-        } else if ( w > 550) {
-          w = 550;
-        }
-        $(`#comments`).html(`
-          <div class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
-          <div class="fb-comments"
-            data-href="https://kunlizhan.com/?post/${name}"
-            data-numposts="5"
-            data-width="${w}"
-            data-colorscheme="dark"
-            data-lazy="true"
-            data-order-by="time"></div>
-        `);
-        if (fbLoaded) {FB.XFBML.parse(document.getElementById('main'));}
+        let path = `?post/${name}`;
+        load_comments(path);
       }
       $(this).readingTime({
         readingTimeTarget: $(this).find(".eta"),
@@ -227,7 +213,7 @@ function show_media(name) {
           let date = new Date(item.date * 1000);
           $('#main').html(`
             <div class="show-wrap">
-              <div class="show-title base-container">
+              <div class="base-container show-title">
                 <h1>${title}</h1>
                 <hr>
                 <div class="metainfo">
@@ -236,17 +222,19 @@ function show_media(name) {
                   </div>
                 </div>
               </div>
-              <div class="show-media base-container">
+              <div class="base-container show-media">
                 <a href="#full_image=${item.content}">
                   <img src="/img/${item.content}" />
                 </a>
               </div>
-              <div class="show-desc base-container">
+              <div class="base-container show-desc">
                 ${item.tags}
               </div>
               <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
             </div>
           `);
+          let path = `?show/${name}`;
+          load_comments(path);
           parseFragment();
           $(`title`).html(`${title} | Kunli Zhan`);
           break;
@@ -259,6 +247,26 @@ function show_media(name) {
       show_media(name);
     },1000)
   }
+}
+
+function load_comments(path) {
+  let w = $(`#comments`).width();
+  if (320 > w ) {
+    w = "100%"
+  } else if ( w > 550) {
+    w = 550;
+  }
+  $(`#comments`).html(`
+    <div class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
+    <div class="fb-comments"
+      data-href="https://kunlizhan.com/${path}"
+      data-numposts="5"
+      data-width="${w}"
+      data-colorscheme="dark"
+      data-lazy="true"
+      data-order-by="time"></div>
+  `);
+  if (fbLoaded) {FB.XFBML.parse(document.getElementById('main'));}
 }
 
 function parseFragment() {
@@ -303,20 +311,14 @@ function parseFragment() {
 function showImgOverlay(path, type) {
   type = type || 0;
   console.log(type);
-  $(`#ol-img a`).remove();
-  let path_to_show = `#_`;
+  let path_to_show = ``;
   if (type == 'preview') {
     path_to_show = `/?show/${path.split('.')[0]}`;
   }
-  $(`#ol-img`).append(`
-    <a href="${path_to_show}">
+  $(`#ol img`).remove();
+  $(`#ol`).append(`
       <img src="/img/${path}" alt="Click for details">
-    </a>
   `);
-  $(`#ol-img a`).click( function(e) {
-    $(`#ol`).removeClass(`active`);
-    ajaxA(e, $(this));
-  } );
   $(`#ol`).addClass(`active`);
 }
 

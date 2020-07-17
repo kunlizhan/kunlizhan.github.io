@@ -43,27 +43,29 @@ body {
   z-index: 1000;
 }
 #ol.active {
-  display: inline;
-  width:100%;
-  height: 100%;
-  background-color: #000a;
-}
-#ol.active:hover {
-  background-color: #0003;
-}
-#ol-img {
+  display: flex;
   width:100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-#ol-img img {
+#ol .close_ol {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000a;
+}
+#ol .close_ol:hover {
+  background-color: #0006;
+}
+#ol img {
+  position: relative;
   max-width: 100vw;
   max-height: 100vh;
-  box-shadow: 0 0 10vw 5vw #000;
+  box-shadow: 0 0 10vw 2vw #000;
 }
-#ol-img img:hover {
+#ol img:hover {
   /*box-shadow: 0 0 10vw 5vw #669;*/
 }
 #bg {
@@ -444,17 +446,18 @@ img.odd {
 }
 @media (min-width: 50em){
   .show-wrap {
+    margin-left: 0.8em;
+    margin-right: 0.8em;
     grid-template-areas:
       "me hd"
       "me ds"
-      "me cm";
-    margin-left: 0.8em;
-    margin-right: 0.8em;
+      "cm cm";
+    grid-template-columns: minmax(min-content, max-content) auto;
+    grid-template-rows: auto minmax(min-content, 100%) auto;
   }
 }
 .show-title {
   grid-area: hd;
-  max-height: max-content;
   padding: 0 1em 1em 1em;
 }
 .show-title h1 {
@@ -470,10 +473,13 @@ img.odd {
   max-width: calc(100% - 2vw);
   max-height: 90vh;
   padding: 1vw;
+  border-radius: 1em;
 }
-.show-desc {
+#main .show-desc {
   grid-area: ds;
   /* shared with .post > .content */
+  padding-top: 1em;
+  text-align: left;
 }
 .show-wrap #comments {
   grid-area: cm;
