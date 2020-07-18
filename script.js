@@ -133,7 +133,7 @@ function load_post_content(contentDiv, name, isThumb) {
       }
       $(this).prepend(
         `
-        <div class="metainfo">
+        <div class="metainfo center-children">
           <div class="metaitem">
             <i class="fa fa-calendar" aria-hidden="true"></i> ${date.toDateString()}
           </div>
@@ -157,7 +157,7 @@ function load_post_content(contentDiv, name, isThumb) {
         $(`meta[property="og:title"]`).attr(`content`, `${title}`);
         $(`meta[property="og:type"]`).attr(`content`, `article`);
         $(`meta[property="og:description"]`).attr(`content`, `${date.toDateString()}`);
-        $(`.metainfo`).append(`
+        $(`.metainfo center-children`).append(`
           <div class="metaitem">
           <a href="#comments">
           <i class="fa fa-comments-o" aria-hidden="true"></i>
@@ -211,12 +211,16 @@ function show_media(name) {
         if (can_show) {
           let title = item.title;
           let date = new Date(item.date * 1000);
+          let desc = ``;
+          if (typeof item.desc !== 'undefined' && item.desc !== '') {
+            desc = item.desc + `<hr>`;
+          }
           $('#main').html(`
             <div class="show-wrap">
               <div class="base-container show-title">
                 <h1>${title}</h1>
                 <hr>
-                <div class="metainfo">
+                <div class="metainfo center-children">
                   <div class="metaitem">
                     <i class="fa fa-calendar" aria-hidden="true"></i> ${date.toDateString()}
                   </div>
@@ -228,11 +232,15 @@ function show_media(name) {
                 </a>
               </div>
               <div class="base-container show-desc">
-                ${item.tags}
+                <span>${desc}</span>
+                <div class="tags metainfo"><span>Tags: </span></div>
               </div>
               <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
             </div>
           `);
+          for (tag of item.tags) {
+            $(`.show-desc > .tags`).append(`<div class="tag">${tag}</div>`);
+          }
           let path = `?show/${name}`;
           load_comments(path);
           parseFragment();
@@ -257,7 +265,7 @@ function load_comments(path) {
     w = 550;
   }
   $(`#comments`).html(`
-    <div class="metainfo">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
+    <div class="metainfo center-children">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
     <div class="fb-comments"
       data-href="https://kunlizhan.com/${path}"
       data-numposts="5"
