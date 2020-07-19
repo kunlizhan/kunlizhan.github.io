@@ -65,7 +65,7 @@ function load_Home() {
     let by_date_reverse = index.post.sort(function (a, b) {
       return b.date - a.date;
     })
-    by_date_reverse.slice(0, 6);
+    by_date_reverse = by_date_reverse.slice(0, 6);
     populateFeed(by_date_reverse);
     $(`title`).html(`KunliZhan.com`);
   } else {

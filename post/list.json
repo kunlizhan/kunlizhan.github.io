@@ -25,8 +25,20 @@
   },
   {
     "title": "Did Socrates even lift? And are you even living?",
-    "date": 	1594602098,
+    "date": 1594602098,
     "content": "did_socrates_even_lift",
     "tags": [ "philosophy", "history" ]
+  },
+  {
+    "title": "Mango's Revenge 2",
+    "date": 1512536415,
+    "content": "mangoes_revenge_2",
+    "tags": [ "music", "film-soundtrack" ]
+  },
+  {
+    "title": "Theme for Endelphia",
+    "date": 1512536415,
+    "content": "theme_for_endelphia",
+    "tags": [ "music", "game-design" ]
   }
 ]
