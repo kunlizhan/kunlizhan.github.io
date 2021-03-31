@@ -94,12 +94,24 @@
     "title": "Portrait of Larissa",
     "date": 1233614601,
     "content": "Port1_a-e.jpg",
-    "tags": [ "traditional", "portrait" ]
+    "tags": [ "traditional", "portrait", "painting" ]
   },
   {
     "title": "Game Character Concept",
     "date": 1359845001,
     "content": "MrHero.jpg",
     "tags": [ "concept-art", "game-dev" ]
+  },
+  {
+    "title": "Girl with BBT",
+    "date": 1616534492,
+    "content": "study_002.jpg",
+    "tags": [ "portrait", "painting" ]
+  },
+  {
+    "title": "Donuts",
+    "date": 1617139292,
+    "content": "10_condensation.jpg",
+    "tags": [ "3D" ]
   }
 ]
