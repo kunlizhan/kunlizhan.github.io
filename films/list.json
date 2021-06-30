@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Cloudscape",
+    "date": "2015-04-27",
+    "tags": [
+      "animation",
+      "2D"
+    ],
+    "path": "Cloudscape",
+    "desc": "The Gemseeker bird has his eyes on the great gemstone, only to find that it is actually on the back of the immense Sky Whale. Will he catch his prize through the clouds?",
+    "thumb": "cloudscape_thumb.jpg"
+  },
+  {
+    "title": "CRIB",
+    "date": "2015-02-02",
+    "tags": [
+      "animation",
+      "comedy",
+      "3D",
+      "CG"
+    ],
+    "path": "CRIB",
+    "desc": "An animated short about a Badger's attempts to build a CRIB. Created by Chuck Loris Productions of Sheridan College, 2014.",
+    "thumb": "crib_thumb.jpg"
+  }
+]

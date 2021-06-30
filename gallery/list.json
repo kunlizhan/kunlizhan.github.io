@@ -1,0 +1,126 @@
+[
+  {
+    "title": "Four Poses in Costume",
+    "date": "2014-02-01",
+    "tags": [
+      "life-drawing",
+      "costume"
+    ],
+    "path": "4costumes",
+    "desc": "A study of four iconic roles across history and culture.",
+    "full": "4costumes.jpg"
+  },
+  {
+    "title": "Badger Wedding",
+    "date": "2014-02-02",
+    "tags": [
+      "concept-art",
+      "CRIB"
+    ],
+    "path": "badger-wedding",
+    "desc": "Concept art for the film CRIB.",
+    "full": "badger-wedding.jpg"
+  },
+  {
+    "title": "A Fantasy Castle",
+    "date": "2013-02-02",
+    "tags": [
+      "landscape",
+      "fantasy",
+      "castle"
+    ],
+    "path": "bird-castle",
+    "desc": "A fantasy castle concept with bird-of-burden.",
+    "full": "bird-castle-01.png"
+  },
+  {
+    "title": "Blender Donuts",
+    "date": "2021-03-30",
+    "tags": [
+      "CG",
+      "3D",
+      "digital"
+    ],
+    "path": "blender-donuts",
+    "desc": "A CG render after a few days of following Andrew Price's tutorial in learning Blender.",
+    "full": "10_condensation.jpg"
+  },
+  {
+    "title": "Cowboy with Guitar",
+    "date": "2013-02-02",
+    "tags": [
+      "life-drawing",
+      "costume"
+    ],
+    "path": "cowboy-with-guitar",
+    "desc": "A sketch of a cowboy with guitar.",
+    "full": "cowboy-with-guitar.jpg"
+  },
+  {
+    "title": "Girl with Bubble Tea",
+    "date": "2021-03-23",
+    "tags": [
+      "portrait",
+      "painting",
+      "digital"
+    ],
+    "path": "girl-with-bbt",
+    "desc": "A digital portrait, from photo reference.",
+    "full": "girl-with-bbt.jpg"
+  },
+  {
+    "title": "Hand Poses",
+    "date": "2013-02-02",
+    "tags": [
+      "life-drawing",
+      "hands"
+    ],
+    "path": "hand-poses-01",
+    "desc": "Self-portraits of hands.",
+    "full": "hand-poses-01.jpg"
+  },
+  {
+    "title": "Portrait of Larissa",
+    "date": "2009-03-01",
+    "tags": [
+      "painting",
+      "oil",
+      "portrait"
+    ],
+    "path": "larissa",
+    "desc": "Portrait of Larissa, oil on canvas, from life.",
+    "full": "larissa.jpg"
+  },
+  {
+    "title": "Character Poses of Mr. Hero",
+    "date": "2013-04-10",
+    "tags": [
+      "game-dev"
+    ],
+    "path": "mr-hero-poses",
+    "desc": "Poses from animation tests for a game character.",
+    "full": "MrHero.jpg"
+  },
+  {
+    "title": "Layout of KunliZhan.com v0",
+    "date": "2020-07-07",
+    "tags": [
+      "web",
+      "tech"
+    ],
+    "path": "old_site_0",
+    "desc": "A screenshot of the earliest version of Kunli Zhan's website.",
+    "full": "old_site_0.jpg"
+  },
+  {
+    "title": "Sheep at the Winter Fair",
+    "date": "2013-11-15",
+    "tags": [
+      "life-drawing",
+      "creature"
+    ],
+    "path": "sheep-at-fair",
+    "desc": "A study from the Royal Agricultural Winter Fair in Toronto.",
+    "full": "sheep-at-fair.jpg"
+  }
+]

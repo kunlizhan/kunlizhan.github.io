@@ -87,7 +87,7 @@ body {
 }
 #bg img {
 }
-.title {
+.banner {
   position: relative;
   z-index: 100;
   font-family: 'Cinzel', serif;
@@ -96,10 +96,10 @@ body {
   background: linear-gradient(to bottom, #000 50%, #0000 100%);
   background-size: cover;
 }
-.title > .blank:first-of-type {
+.banner > .blank:first-of-type {
   height: 5vw;
 }
-.title h1 {
+.banner h1 {
   margin: 0 0 0 0;
   font-size: 3em;
   font-weight: normal;
@@ -109,17 +109,17 @@ body {
   -webkit-text-fill-color: transparent;
   cursor: pointer;
 }
-.title h2 {
+.banner h2 {
   margin: 0 0 0 0;
   font-size: 1.5em;
   font-weight: normal;
   color: #fff;
   cursor: pointer;
 }
-.title a {
+.banner a {
   text-decoration: none;
 }
-.title > .blank:last-of-type {
+.banner > .blank:last-of-type {
   height: 2vw;
 }
 #nav-fixed-bg {
@@ -272,7 +272,7 @@ nav a {
   max-width: 100%;
 }
 @media (min-width: 50em) {
-  .title {
+  .banner {
     /*color: red;
     padding: 3em 0 4em 0;*/
   }
@@ -386,23 +386,30 @@ nav a {
   text-align: left;
   margin-bottom: 2em;
 }
-#art-vp img {
+#art-vp .art-item {
   max-width: 49vw;
   margin: 0.5vw;
   /*border-style: solid;
   border-color: #44c;*/
-  border-radius: 2vh;
+  border-radius: 1em;
   box-shadow: 0 0 1.2vh 0.4vh #66e;
   transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
-img.even {
+.art-item.even {
   float: top;
 }
-img.odd {
+.art-item.odd {
   float: right;
 }
+#art-vp.films .art-item {
+  max-width: none;
+  cursor: pointer;
+}
+.art-item img {
+  border-radius: 1em 1em 0em 0em;
+}
 @media (min-width: 36.5em) {
-  #art-vp {
+  #art-vp.gallery {
     display: flex;
     height: auto;
     width: 100%;
@@ -410,7 +417,7 @@ img.odd {
     flex-direction: row;
     justify-content: center;
   }
-  #art-vp img {
+  #art-vp.gallery .art-item {
     float: none;
     max-width: none;
     height: 30vh;
@@ -418,14 +425,21 @@ img.odd {
     margin: 0.5vh;
     object-fit: contain;
   }
+  #art-vp.films {
+    display: flex;
+    justify-content: center;
+  }
+  #art-vp.films .art-item {
+    max-width: 32em;
+    flex: 1;
+  }
 }
-#art-vp img:hover {
+#art-vp .art-item:hover {
   position: relative;
   z-index: 1;
   transform: scale(1.2, 1.2);
   transition: transform 0.3s cubic-bezier(0, 0.55, 0.45, 1);
 }
-
 /* ?show */
 .show-wrap {
   display: grid;
@@ -491,7 +505,6 @@ img.odd {
 
 /* site-wide reusable styles */
 .base-container {
-  display: inline-block;
   border-style: solid none none none;
   border-width: thick;
   border-color: #44c;
