@@ -1,0 +1,39 @@
+<iframe id="sc-widget" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/367081190&color=%234444cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe>
+<div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/kunli-zhan" title="Kunli Zhan" target="_blank" style="color: #cccccc; text-decoration: none;">Kunli Zhan</a> · <a href="https://soundcloud.com/kunli-zhan/first-theme-for-endelphia" title="First Theme For Endelphia" target="_blank" style="color: #cccccc; text-decoration: none;">First Theme For Endelphia</a></div>
+<img src="img/hbar.gif" class="hbar">
+<div class="soundcloud-desc"></div>
+<script type="text/javascript">
+
+function customMusic() {
+    var iframe = document.getElementById('sc-widget');
+    var widget = SC.Widget(iframe);
+
+    widget.bind(SC.Widget.Events.READY, function() {
+      widget.bind(SC.Widget.Events.PLAY, function() {
+        // get information about currently playing sound
+        widget.getCurrentSound(function(currentSound) {
+          console.log(currentSound.description);
+          $(`.soundcloud-desc`).html(currentSound.description);
+        });
+      });
+      // get current level of volume
+      widget.getVolume(function(volume) {
+        console.log('current volume value is ' + volume);
+      });
+      // set new volume level
+      widget.setVolume(50);
+      // get the value of the current position
+      widget.getSounds(function(sounds) {
+        console.log(sounds);
+      });
+    });
+
+}
+$.getScript( "https://w.soundcloud.com/player/api.js", function( data, textStatus, jqxhr ) {
+  console.log( data ); // Data returned
+  console.log( textStatus ); // Success
+  console.log( jqxhr.status ); // 200
+  console.log( "Load was performed." );
+  //customMusic();
+});
+</script>

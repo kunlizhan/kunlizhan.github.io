@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- dependencies -->
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script>
+    const index = {'post': [], 'site': []};
+    function get_index() {
+      $.getJSON("/site/list.json", function(data) {
+        index.site = data;
+      });
+      $.getJSON("/post/list.json", function(data) {
+        index.post = data;
+      });
+      $.getJSON("/img/list.json", function(data) {
+        index.img = data;
+      });
+    }
+    get_index();
+  </script>
+  <script src="/js/readingtime.min.js"></script>
+
+	<!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#302070">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="msapplication-tap-highlight" content="no" /> <!-- recommended for hammer.js -->
+
+  <title>KunliZhan.com</title>
+  <link rel="icon" href="favicon.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- facebook api -->
+  <meta property="fb:app_id" content="982995422130578" />
+  <meta property="og:url" content="https://kunlizhan.com/" />
+  <meta property="og:title" content="KunliZhan.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="Sanctum Ephemeralis - Kunli Zhan" />
+  <meta property="og:image" content="https://kunlizhan.com/img/banner.gif" />
+</head>
+<body>
+  <div id="fb-root"></div>
+  <script>
+    var fbLoaded = false;
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '982995422130578',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v7.0'
+      });
+      FB.AppEvents.logPageView();
+      fbLoaded = true;
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div id="ol">
+    <a href="" class="close_ol"></a>
+    <div id="ol-img"></div>
+  </div>
+  <div id="bg">
+    <img src="img/bg.jpg">
+  </div>
+  <div id="vp">
+    <div class="title-black">
+    </div>
+    <div id="top" class="title">
+      <div class="blank"></div>
+      <a href="/" onclick='FB.AppEvents.logEvent("buttonClicked")'>
+        <h1>
+          Sanctum Ephemeralis
+        </h1>
+        <h2>
+          Kunli Zhan
+        </h2>
+      </a>
+      <div class="blank"></div>
+    </div>
+    <div id="nav-fixed-bg">
+      <div class="btn">
+        <a href="#top"><div class="text noselect">
+          <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+        </div></a>
+      </div>
+    </div>
+    <nav id="nav" class="">
+      <div class="btn-group">
+        <a href="/">
+          <div class="btn">
+            <div class="text noselect">
+              <i class="fa fa-home" aria-hidden="true"></i> <span>Home</span>
+            </div>
+          </div>
+        </a>
+        <a href="/?animation">
+          <div class="btn">
+            <div class="text noselect">
+              <i class="fa fa-play-circle" aria-hidden="true"></i> <span>Animation</span>
+            </div>
+          </div>
+        </a>
+        <a href="/?art">
+          <div class="btn">
+            <div class="text noselect">
+              <i class="fa fa-paint-brush" aria-hidden="true"></i> <span>Art & Music</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="btn-group">
+        <a href="/?philosophy">
+          <div class="btn">
+            <div class="text noselect">
+              <i class="fa fa-book" aria-hidden="true"></i> <span>Philosophy</span>
+            </div>
+          </div>
+        </a>
+        <a href="/?misc">
+          <div class="btn">
+            <div class="text noselect">
+              <i class="fa fa-server" aria-hidden="true"></i> <span>Misc</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </nav>
+    <div class="blank"></div>
+    <div id="main" class="center-children">
+      Loading...
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
