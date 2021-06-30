@@ -443,13 +443,12 @@ function update_title_in_head(title) {
 
 var queued_content = null
 $( document ).ready(function() {
-  console.log("Ready, location: " + document.location.pathname);
+  //console.log("Ready, location: " + document.location.pathname);
   get_index_of(["articles", "gallery", "films", "music"])
-  last_q = document.location.pathname
+  //last_q = document.location.pathname
   queued_content = $("#main").html() //saves the page's content
   $("body").load("/common.html", function() {
     layout_nav()
-    layout_main()
-    parseFragment()
+    parseQuery()
   })
 });
