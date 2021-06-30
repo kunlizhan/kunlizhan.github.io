@@ -158,7 +158,9 @@ function layout_main() {
       case "music":
         if (path.length === 3) { layout_music_item(path[2]) }
         break
+      case "404.html":
       default:
+        layout_404(document.location.pathname, {status:"404", statusText:"File not found"}, $(`#main`))
     }
   }
   else {
