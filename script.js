@@ -2,7 +2,8 @@
 const index = {
   timer: 100,
   ready_count: 0,
-  parts_sum: 4
+  parts_sum: 4,
+  last_q: null,
 }
 function get_index_of(array) {
   for (let str of array) {
@@ -22,15 +23,14 @@ function ajaxA(e, a) {
   else { console.log("no href") }
 
   history.pushState({}, "", url)
-  parseQuery()
+  get_page_or_404()
 }
 
 window.addEventListener('popstate', (e) => {
-  parseQuery()
+  get_page_or_404()
 })
 
-var last_q = null;
-function parseQuery() {
+function get_page_or_404() {
   let parsed_path = document.location.pathname
   /*
   //not sure if still needed after using static site and real pathnames instead of query hacks
@@ -41,20 +41,74 @@ function parseQuery() {
   //const breakers = /&|fbclid/i; //not sure if still needed for fb
   //parsed_path = parsed_path.split(breakers)[0];
   //check if we're already on the same query
-  if (parsed_path === last_q) {
+  if (parsed_path === index.last_q) {
     parseFragment()
   } else {
-    last_q = parsed_path
+    index.last_q = parsed_path
     let path_to_main = `${parsed_path} #main`
     queued_content = $(`<div>`).load(path_to_main, function( response, status, xhr ) {
       if ( status === "error" ) { layout_404(parsed_path, xhr, $(`#main`)) }
       else {
         queued_content = $(`#main`, queued_content.get(0)).html()
         //console.log(queued_content)
-        layout_main()
+        find_page_from_index()
         parseFragment()
       }
     })
+  }
+}
+
+function find_page_from_index() {
+  if (index.ready_count === index.parts_sum) {
+    let path = document.location.pathname
+    path = path.split("/")
+    if (path.length === 2) {
+      switch (path[1]) {
+        case "":
+          layout_home()
+          break
+        case "gallery":
+        case "gallery.html":
+          layout_gallery()
+          break
+        case "films":
+        case "films.html":
+          layout_films()
+          break
+        case "articles":
+        case "articles.html":
+          layout_home()
+          break
+        default:
+          layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+      }
+    }
+    else if (path.length === 3) {
+      switch (path[1]) {
+        case "articles":
+          layout_articles_item(path[2])
+          break
+        case "gallery":
+          layout_gallery_item(path[2])
+          break
+        case "films":
+          layout_films_item(path[2])
+          break
+        case "music":
+          layout_music_item(path[2])
+          break
+        default:
+          layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+      }
+    }
+    else {
+      layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+    }
+  }
+  else {
+    console.log("index not ready, trying again later")
+    index.timer = index.timer*2
+    setTimeout(function(){ find_page_from_index() }, index.timer)
   }
 }
 
@@ -105,7 +159,7 @@ function layout_404(resource, xhr, div) {
   let msg = `<br>Unable to load "${resource}".`
   $(div).html(`
     <div class="base-container error">
-    ${msg} <br><br> ${xhr.status}: ${xhr.statusText}
+    ${msg} <br><br> ${xhr.status}: ${xhr.statusText}<br>
     <img src="/img/site/hbar.gif" class="hbar">
     </div>
   `)
@@ -126,48 +180,6 @@ function layout_nav() {
     }
   )
   $(`.close_ol`).click( function(e) {e.preventDefault(); history.back();} );
-}
-
-function layout_main() {
-  if (index.ready_count === index.parts_sum) {
-    let path = document.location.pathname
-    path = path.split("/")
-
-    switch (path[1]) {
-      case "":
-        layout_home()
-        break
-      case "gallery.html":
-        layout_gallery()
-        break
-      case "films.html":
-        layout_films()
-        break
-      case "articles.html":
-        layout_home()
-        break
-      case "articles":
-        if (path.length === 3) { layout_articles_item(path[2]) }
-        break
-      case "gallery":
-        if (path.length === 3) { layout_gallery_item(path[2]) }
-        break
-      case "films":
-        if (path.length === 3) { layout_films_item(path[2]) }
-        break
-      case "music":
-        if (path.length === 3) { layout_music_item(path[2]) }
-        break
-      case "404.html":
-      default:
-        layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
-    }
-  }
-  else {
-    console.log("index not ready, trying again later")
-    index.timer = index.timer*2
-    setTimeout(function(){ layout_main() }, index.timer)
-  }
 }
 
 function layout_home() {
@@ -445,10 +457,10 @@ var queued_content = null
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);
   get_index_of(["articles", "gallery", "films", "music"])
-  //last_q = document.location.pathname
+  //index.last_q = document.location.pathname
   queued_content = $("#main").html() //saves the page's content
   $("body").load("/common.html", function() {
     layout_nav()
-    parseQuery()
+    get_page_or_404()
   })
 });

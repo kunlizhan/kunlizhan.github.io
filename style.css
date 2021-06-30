@@ -68,24 +68,12 @@ body {
 #ol img:hover {
   /*box-shadow: 0 0 10vw 5vw #669;*/
 }
-#bg {
+#bg img {
+  height: 100%;
+  width:100%;
+  object-fit: cover;
   position: fixed;
   z-index: -10;
-  top: -20vh;
-  left: -20vw;
-  height: 140vh;
-  width: 140vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  /*background: url(img/bg.jpg) no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;*/
-}
-#bg img {
 }
 .banner {
   position: relative;
