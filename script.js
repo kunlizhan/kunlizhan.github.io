@@ -106,7 +106,7 @@ function layout_404(resource, xhr, div) {
   $(div).html(`
     <div class="base-container error">
     ${msg} <br><br> ${xhr.status}: ${xhr.statusText}
-    <img src="img/site/hbar.gif" class="hbar">
+    <img src="/img/site/hbar.gif" class="hbar">
     </div>
   `)
 }
@@ -160,7 +160,7 @@ function layout_main() {
         break
       case "404.html":
       default:
-        layout_404(document.location.pathname, {status:"404", statusText:"File not found"}, $(`#main`))
+        layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
     }
   }
   else {
