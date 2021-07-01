@@ -366,11 +366,13 @@ nav a {
   position: relative;
   width: 100%;
   min-height: 178px;
+  background-color: #aaf;
+}
+#comments .metainfo {
+  color: #003;
 }
 #comments > .fb-comments {
   max-width: 550px;
-  border-radius: 1em;
-  background-color: #88c;
 }
 
 /* ?art */
