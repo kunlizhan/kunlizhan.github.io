@@ -374,6 +374,19 @@ nav a {
 #comments > .fb-comments {
   max-width: 550px;
 }
+#goto-comments {
+  text-decoration: none;
+}
+/* hide while loading */
+#goto-comments span span {
+  display: none;
+}
+#goto-comments span span.fb_comments_count {
+  display: inline-block;
+}
+#goto-comments span.text {
+  text-decoration: underline;
+}
 
 /* ?art */
 #art-vp {/*

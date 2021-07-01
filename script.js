@@ -270,9 +270,11 @@ function process_article_div({div, path, isThumb=false}) {
     update_title_in_head(`${title}`)
     $(`.metainfo`).append(`
       <div class="metaitem">
-      <a href="#comments">
+      <a href="#comments" id="goto-comments">
         <i class="fas fa-comments" aria-hidden="true"></i>
-        <span class="fb-comments-count" data-href="https://kunlizhan.com/articles/${path}.html"></span> Comments</a>
+        <span class="fb-comments-count" data-href="https://kunlizhan.com/articles/${path}"></span>
+        <span class="text">Comments</span>
+      </a>
       </div>
     `)
     //Comments
