@@ -60,6 +60,8 @@ function get_page_or_404() {
 
 function find_page_from_index() {
   if (index.ready_count === index.parts_sum) {
+    $(`#nav .text`).removeClass(`current-page`)
+
     let path = document.location.pathname
     path = path.split("/")
     if (path.length === 2) {
@@ -183,23 +185,26 @@ function layout_nav() {
 }
 
 function layout_home() {
-  $(`#main`).html(`<div class="newsfeed"></div>`)
   update_title_in_head(`KunliZhan.com`)
+  $(`#btn-home`).addClass(`current-page`)
+  $(`#main`).html(`<div class="newsfeed"></div>`)
   let by_date_reverse = index.articles.sort(sort_reverse_date)
   by_date_reverse = by_date_reverse.slice(0, 6)
   populateFeed(by_date_reverse)
 }
 
 function layout_gallery() {
-  $(`#main`).html(`<div id="art-vp" class="gallery"></div>`)
   update_title_in_head(`Gallery`)
+  $(`#btn-gallery`).addClass(`current-page`)
+  $(`#main`).html(`<div id="art-vp" class="gallery"></div>`)
   let by_date_reverse = index.gallery.sort(sort_reverse_date)
   populateArtVP(by_date_reverse)
 }
 
 function layout_films() {
-  $(`#main`).html(`<div id="art-vp" class="films"></div>`)
   update_title_in_head(`Films`)
+  $(`#btn-films`).addClass(`current-page`)
+  $(`#main`).html(`<div id="art-vp" class="films"></div>`)
   let by_date_reverse = index.films.sort(sort_reverse_date)
   populateFilmVP(by_date_reverse)
 }
@@ -239,10 +244,10 @@ function process_article_div({div, path, isThumb=false}) {
     `
     <div class="metainfo center-children">
       <div class="metaitem">
-        <i class="fa fa-calendar" aria-hidden="true"></i> ${article.dateUnix.toDateString()}
+        <i class="fas fa-calendar-check" aria-hidden="true"></i> ${article.dateUnix.toDateString()}
       </div>
       <div class="metaitem">
-        <i class="fa fa-clock-o" aria-hidden="true"></i>
+        <i class="fas fa-clock" aria-hidden="true"></i>
         Reading time: <div class="eta"></div>
       </div>
     </div>
@@ -260,13 +265,13 @@ function process_article_div({div, path, isThumb=false}) {
     $(`.metainfo center-children`).append(`
       <div class="metaitem">
       <a href="#comments">
-        <i class="fa fa-comments-o" aria-hidden="true"></i>
+        <i class="fas fa-comments" aria-hidden="true"></i>
         <span class="fb-comments-count" data-href="https://kunlizhan.com/articles/${path}.html"></span> Comments</a>
       </div>
     `)
     //Comments
-    //let path = `articles/${path}.html`
-    //load_comments(path);
+    let path = `articles/${path}.html`
+    load_comments(path);
   }
   div.readingTime({
     readingTimeTarget: div.find(".eta"),
@@ -289,7 +294,7 @@ function layout_gallery_item(path) {
         <hr>
         <div class="metainfo center-children">
           <div class="metaitem">
-            <i class="fa fa-calendar" aria-hidden="true"></i> ${date.toDateString()}
+            <i class="fas fa-calendar-check" aria-hidden="true"></i> ${date.toDateString()}
           </div>
         </div>
       </div>
@@ -308,8 +313,8 @@ function layout_gallery_item(path) {
   for (let tag of item.tags) {
     $(`.show-desc > .tags`).append(`<div class="tag">${tag}</div>`);
   }
-  //let path = `?show/${name}`;
-  //load_comments(path);
+  let path = `gallery/${name}`;
+  load_comments(path);
   update_title_in_head(`${title}`)
 }
 
@@ -326,7 +331,7 @@ function layout_films_item(path) {
           <hr>
           <div class="metainfo center-children">
             <div class="metaitem">
-              <i class="fa fa-calendar" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
+              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
             </div>
           </div>
           <br>
@@ -352,7 +357,7 @@ function layout_music_item(path) {
           <hr>
           <div class="metainfo center-children">
             <div class="metaitem">
-              <i class="fa fa-calendar" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
+              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
             </div>
           </div>
           <br>
@@ -373,10 +378,10 @@ function populateFeed(array) {
         <div class="readMore">
           <div>
           <a href="/articles/${article.path}.html#top">
-          <i class="fa fa-file-text" aria-hidden="true"></i> Full article</a>
+          <i class="fas fa-file-alt" aria-hidden="true"></i> Full article</a>
            &emsp14; &emsp14;
           <a href="/articles/${article.path}.html#comments">
-          <i class="fa fa-comments-o" aria-hidden="true"></i> Comments</a>
+          <i class="fas fa-comments" aria-hidden="true"></i> Comments</a>
           </div>
         </div>
       </div>
@@ -430,7 +435,7 @@ function populateFilmVP(array) {
             <h1>${item.title}</h1><hr>
               <div class="metainfo center-children">
                 <div class="metaitem">
-                  <i class="fa fa-calendar" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
+                  <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
                 </div>
               </div>
               <br>
@@ -451,6 +456,46 @@ function sort_reverse_date(a, b) {
 
 function update_title_in_head(title) {
   $(`title`).html(`${title} | Kunli Zhan`)
+}
+
+var fbLoaded = false;
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '982995422130578',
+    cookie     : true,
+    xfbml      : true,
+    version    : 'v7.0'
+  });
+  FB.AppEvents.logPageView();
+  fbLoaded = true;
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "https://connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+
+function load_comments(path) {
+  let w = $(`#comments`).width();
+  if (320 > w ) {
+    w = "100%"
+  } else if ( w > 550) {
+    w = 550;
+  }
+  $(`#comments`).html(`
+    <div class="metainfo center-children">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
+    <div class="fb-comments"
+      data-href="https://kunlizhan.com/${path}"
+      data-numposts="5"
+      data-width="${w}"
+      data-colorscheme="dark"
+      data-lazy="true"
+      data-order-by="time"></div>
+  `);
+  if (fbLoaded) {FB.XFBML.parse(document.getElementById('main'));}
 }
 
 var queued_content = null

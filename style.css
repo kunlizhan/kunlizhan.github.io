@@ -160,6 +160,7 @@ body {
 @media (min-width: 36.5em) {
   #nav .btn .text > span {
     display: inline;
+    margin-left: 0.5em;
   }
 }
 nav a {
@@ -182,6 +183,9 @@ nav a {
 .btn .text:hover {
   color: #fff;
   transition: color 0.5s;
+}
+.btn .text.current-page {
+  color: #fff;
 }
 .btn-bg-dark {
   position: absolute;
@@ -532,3 +536,22 @@ q, blockquote {
 }
 q:before, blockquote::before { content: open-quote; }
 q:after, blockquote::after  { content: close-quote; }
+
+/* custom icons */
+i.kz-logo {
+  margin-left: -0.3em;
+  margin-right: -0.3em;
+}
+i.kz-logo i {
+  position: relative;
+}
+i.kz-logo i:nth-child(1){
+  top: -0.32em;
+  left: 0.18em;
+  transform: rotate(45deg);
+  font-size: 70%;
+}
+i.kz-logo i:nth-child(2){
+  top: 0.1em;
+  left: -0.3em;
+}
