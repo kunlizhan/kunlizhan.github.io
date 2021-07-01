@@ -485,18 +485,19 @@ function load_comments(path) {
   }
   $(`#comments`).html(`
     <div class="metainfo center-children">Comments from <i class="fab fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
-    <div class="fb-comments" data-href="https://kunlizhan.com/${path}" data-width="" data-numposts="5" data-colorscheme="dark" data-lazy="true" data-order-by="time"></div>
-  `)
-  {FB.XFBML.parse(document.getElementById('main'))}
+    <div class="fb-comments"
+      data-href="https://kunlizhan.com/${path}"
+      data-numposts="5"
+      data-width="${w}"
+      data-colorscheme="dark"
+      data-lazy="true"
+      data-order-by="time"></div>
+    `)
+  try { FB.XFBML.parse(document.getElementById('main')) }
+  catch (err) {
+    if (err.message !== "FB is not defined") { throw err }
+  }
 }
-/*<div class="metainfo center-children">Comments from <i class="fab fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
-<div class="fb-comments"
-  data-href="https://kunlizhan.com/${path}"
-  data-numposts="5"
-  data-width="${w}"
-  data-colorscheme="dark"
-  data-lazy="true"
-  data-order-by="time"></div>*/
 var queued_content = null
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);
