@@ -81,6 +81,10 @@ function find_page_from_index() {
         case "articles.html":
           layout_home()
           break
+        case "music":
+        case "music.html":
+          layout_music()
+          break
         default:
           layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
       }
@@ -124,37 +128,33 @@ function parseFragment() {
         //console.log("no such id: "+id);
       }
     }
-    tryScroll(id);
-    if (id == 'comments') {
-      //give comments time to load, then scroll again
-      setTimeout(function(){ tryScroll(id); }, 2000);
-    }
-    let arg = id.split('=')[1];
-    id = id.split('=')[0];
-    let ol_on = false;
+    let arg = id.split('=')[1]
+    id = id.split('=')[0]
+    let ol_on = false
     switch (id) {
       case 'comments':
-        setTimeout(function(){ tryScroll(id); }, 2000);
+        setTimeout(function(){ tryScroll(id); }, 2000)
         break;
       case 'full_image':
-        ol_on = true;
-        showImgOverlay(arg);
+        ol_on = true
+        showImgOverlay(arg)
         break;
       default:
+        tryScroll(id)
     }
     if (!ol_on) {
-      $(`#ol`).removeClass(`active`);
+      $(`#ol`).removeClass(`active`)
     }
   } else {
-    $(`#ol`).removeClass(`active`); //turn off ol if there is no hash, as ol should only be on with #full_image
+    $(`#ol`).removeClass(`active`) //turn off ol if there is no hash, as ol should only be on with #full_image
   }
 }
 function showImgOverlay(path) {
-  $(`#ol img`).remove();
+  $(`#ol img`).remove()
   $(`#ol`).append(`
       <img src="/img/full/${path}" alt="Click for details">
   `);
-  $(`#ol`).addClass(`active`);
+  $(`#ol`).addClass(`active`)
 }
 
 function layout_404(resource, xhr, div) {
@@ -207,6 +207,12 @@ function layout_films() {
   $(`#main`).html(`<div id="art-vp" class="films"></div>`)
   let by_date_reverse = index.films.sort(sort_reverse_date)
   populateFilmVP(by_date_reverse)
+}
+
+function layout_music() {
+  update_title_in_head(`Music`)
+  $(`#btn-films`).addClass(`current-page`)
+  $(`#main`).html(queued_content)
 }
 
 function layout_articles_item(path) {
@@ -262,7 +268,7 @@ function process_article_div({div, path, isThumb=false}) {
     //for full post, make title and insert into metainfo a link to comments
     div.prepend(`<h1>${title}</h1><hr>`)
     update_title_in_head(`${title}`)
-    $(`.metainfo center-children`).append(`
+    $(`.metainfo`).append(`
       <div class="metaitem">
       <a href="#comments">
         <i class="fas fa-comments" aria-hidden="true"></i>
@@ -270,7 +276,7 @@ function process_article_div({div, path, isThumb=false}) {
       </div>
     `)
     //Comments
-    load_comments(`articles/${path}`);
+    load_comments();
   }
   div.readingTime({
     readingTimeTarget: div.find(".eta"),
@@ -312,7 +318,7 @@ function layout_gallery_item(path) {
   for (let tag of item.tags) {
     $(`.show-desc > .tags`).append(`<div class="tag">${tag}</div>`);
   }
-  load_comments(`gallery/${path}`)
+  load_comments()
   update_title_in_head(`${title}`)
 }
 
@@ -339,6 +345,7 @@ function layout_films_item(path) {
       <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
     </div>
   `)
+  load_comments()
   update_title_in_head(item.title)
 }
 
@@ -476,7 +483,7 @@ window.fbAsyncInit = function() {
    fjs.parentNode.insertBefore(js, fjs);
  }(document, 'script', 'facebook-jssdk'));*/
 
-function load_comments(path) {
+function load_comments() {
   let w = $(`#comments`).width();
   if (320 > w ) {
     w = "100%"
@@ -486,18 +493,36 @@ function load_comments(path) {
   $(`#comments`).html(`
     <div class="metainfo center-children">Comments from <i class="fab fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
     <div class="fb-comments"
-      data-href="https://kunlizhan.com/${path}"
+      data-href="https://kunlizhan.com/${document.location.pathname}"
       data-numposts="5"
       data-width="${w}"
-      data-colorscheme="dark"
+      data-colorscheme="light"
       data-lazy="true"
       data-order-by="time"></div>
     `)
-  try { FB.XFBML.parse(document.getElementById('main')) }
+  try { FB.XFBML.parse(document.getElementById('main'))
+  }
   catch (err) {
     if (err.message !== "FB is not defined") { throw err }
   }
 }
+var sc_w = undefined
+$.getScript( "https://w.soundcloud.com/player/api.js")
+  .fail(function( data, textStatus, jqxhr ) {
+    console.log(`Soundcloud API failed to load`)
+    //layout_404(`Soundcloud API`, xhr, $(`#main`))
+  })
+  .done(function( data, textStatus, jqxhr ) {
+    $(`body`).append(`<iframe id="sc-widget" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1094860567&color=%234444cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false"></iframe>`)
+    sc_w = SC.Widget('sc-widget')
+    sc_w.bind(SC.Widget.Events.PLAY, function() {
+      // get information about currently playing sound
+      sc_w.getCurrentSound(function(currentSound) {
+        console.log(currentSound.description)
+      })
+    })
+  })
+
 var queued_content = null
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);

@@ -499,6 +499,11 @@ nav a {
   grid-area: cm;
 }
 
+/* Soundcloud */
+#sc-widget {
+  display: none;
+}
+
 /* site-wide reusable styles */
 .base-container {
   border-style: solid none none none;
