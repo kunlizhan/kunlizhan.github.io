@@ -455,7 +455,7 @@ function sort_reverse_date(a, b) {
 function update_title_in_head(title) {
   $(`title`).html(`${title} | Kunli Zhan`)
 }
-
+/*
 var fbLoaded = false;
 window.fbAsyncInit = function() {
   FB.init({
@@ -474,7 +474,7 @@ window.fbAsyncInit = function() {
    js = d.createElement(s); js.id = id;
    js.src = "https://connect.facebook.net/en_US/sdk.js";
    fjs.parentNode.insertBefore(js, fjs);
- }(document, 'script', 'facebook-jssdk'));
+ }(document, 'script', 'facebook-jssdk'));*/
 
 function load_comments(path) {
   let w = $(`#comments`).width();
@@ -484,18 +484,19 @@ function load_comments(path) {
     w = 550;
   }
   $(`#comments`).html(`
-    <div class="metainfo center-children">Comments from <i class="fa fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
-    <div class="fb-comments"
-      data-href="https://kunlizhan.com/${path}"
-      data-numposts="5"
-      data-width="${w}"
-      data-colorscheme="dark"
-      data-lazy="true"
-      data-order-by="time"></div>
-  `);
-  if (fbLoaded) {FB.XFBML.parse(document.getElementById('main'));}
+    <div class="metainfo center-children">Comments from <i class="fab fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
+    <div class="fb-comments" data-href="https://kunlizhan.com/${path}" data-width="" data-numposts="5" data-colorscheme="dark" data-lazy="true" data-order-by="time"></div>
+  `)
+  {FB.XFBML.parse(document.getElementById('main'))}
 }
-
+/*<div class="metainfo center-children">Comments from <i class="fab fa-facebook-square" aria-hidden="true"></i> Facebook (requires 3rd party cookies)</div>
+<div class="fb-comments"
+  data-href="https://kunlizhan.com/${path}"
+  data-numposts="5"
+  data-width="${w}"
+  data-colorscheme="dark"
+  data-lazy="true"
+  data-order-by="time"></div>*/
 var queued_content = null
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);
