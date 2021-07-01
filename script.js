@@ -270,8 +270,7 @@ function process_article_div({div, path, isThumb=false}) {
       </div>
     `)
     //Comments
-    let path = `articles/${path}.html`
-    load_comments(path);
+    load_comments(`articles/${path}.html`);
   }
   div.readingTime({
     readingTimeTarget: div.find(".eta"),
@@ -313,8 +312,7 @@ function layout_gallery_item(path) {
   for (let tag of item.tags) {
     $(`.show-desc > .tags`).append(`<div class="tag">${tag}</div>`);
   }
-  let path = `gallery/${name}`;
-  load_comments(path);
+  load_comments(`gallery/${name}`)
   update_title_in_head(`${title}`)
 }
 
