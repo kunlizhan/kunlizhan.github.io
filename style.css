@@ -369,7 +369,7 @@ nav a {
   background-color: #aaf;
 }
 #comments .metainfo {
-  /*color: #003;*/
+  color: #003;
 }
 #comments > .fb-comments {
   max-width: 550px;
@@ -558,7 +558,14 @@ q, blockquote {
 }
 q:before, blockquote::before { content: open-quote; }
 q:after, blockquote::after  { content: close-quote; }
-
+.bold {font-weight: bold;}
+.italic {font-style: italic;}
+.spoiler-hide > .spoiler-content {
+  display: none;
+}
+.spoiler-show > .spoiler-content {
+  display: inline;
+}
 /* custom icons */
 i.kz-logo {
   margin-left: -0.3em;

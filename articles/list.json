@@ -20,6 +20,17 @@
     "desc": "Essay recommendation regarding the culture of ruthlessness."
   },
   {
+    "title": "Lessons from the Blackbird",
+    "date": "2021-07-04",
+    "tags": [
+      "philosophy",
+      "physics",
+      "epistemology"
+    ],
+    "path": "lessons_from_the_blackbird",
+    "desc": "An epistemological post-mortem of a fascinating saga of physics debate."
+  },
+  {
     "title": "Art is non-essential, and that is great",
     "date": "2020-10-23",
     "tags": [

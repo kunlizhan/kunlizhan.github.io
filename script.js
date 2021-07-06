@@ -110,6 +110,7 @@ function find_page_from_index() {
     else {
       layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
     }
+    init_spoilers()
   }
   else {
     console.log("index not ready, trying again later")
@@ -464,26 +465,6 @@ function sort_reverse_date(a, b) {
 function update_title_in_head(title) {
   $(`title`).html(`${title} | Kunli Zhan`)
 }
-/*
-var fbLoaded = false;
-window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '982995422130578',
-    cookie     : true,
-    xfbml      : true,
-    version    : 'v7.0'
-  });
-  FB.AppEvents.logPageView();
-  fbLoaded = true;
-};
-
-(function(d, s, id){
-   var js, fjs = d.getElementsByTagName(s)[0];
-   if (d.getElementById(id)) {return;}
-   js = d.createElement(s); js.id = id;
-   js.src = "https://connect.facebook.net/en_US/sdk.js";
-   fjs.parentNode.insertBefore(js, fjs);
- }(document, 'script', 'facebook-jssdk'));*/
 
 function load_comments() {
   let w = $(`#comments`).width();
@@ -508,6 +489,43 @@ function load_comments() {
     if (err.message !== "FB is not defined") { throw err }
   }
 }
+
+function init_spoilers() {
+  $( document ).ready(function() {
+    $(`.spoiler-hide.spoiler-unrendered, .spoiler-show.spoiler-unrendered`).each(function( index ) {
+      let content = $( this ).html()
+      $(this).html(`<button class="spoiler-btn"></button>
+      <div class="spoiler-content">${content}</div>`)
+      let button = $(this).children(`.spoiler-btn`)
+      button.click(function(e) {
+        spoiler_toggle(button)
+      })
+      spoiler_button_html(button)
+      $(this).removeClass("spoiler-unrendered")
+    })
+  })
+}
+function spoiler_toggle(button) {
+  console.log(`toggle!`)
+  let parent = button.parent()
+  if (parent.hasClass(`spoiler-hide`)) {
+    parent.removeClass(`spoiler-hide`)
+    parent.addClass(`spoiler-show`)
+  }
+  else {
+    parent.removeClass(`spoiler-show`)
+    parent.addClass(`spoiler-hide`)
+  }
+  spoiler_button_html(button)
+}
+function spoiler_button_html(button) {
+  if (button.parent().hasClass(`spoiler-hide`)) {
+    button.html(`Show Spoiler`)
+  }
+  else {
+    button.html(`Hide Spoiler`)
+  }
+}
 var sc_w = undefined
 $.getScript( "https://w.soundcloud.com/player/api.js")
   .fail(function( data, textStatus, jqxhr ) {
@@ -524,7 +542,9 @@ $.getScript( "https://w.soundcloud.com/player/api.js")
       })
     })
   })
-
+const music_player = {
+  sync_state_sc: function() {},
+}
 var queued_content = null
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);
