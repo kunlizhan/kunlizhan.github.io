@@ -2,8 +2,17 @@
 const index = {
   timer: 100,
   ready_count: 0,
-  parts_sum: 4,
   last_q: null,
+  categories: ["articles", "gallery", "films", "music"],
+  load_indices: function() { get_index_of(this.categories) },
+  Errs: {
+    Ind404: class Ind404 {
+  		constructor(msg) {
+  			this.name = `ind404`
+        this.message = msg
+  		}
+    }
+  }
 }
 function get_index_of(array) {
   for (let str of array) {
@@ -23,43 +32,33 @@ function ajaxA(e, a) {
   else { console.log("no href") }
 
   history.pushState({}, "", url)
-  get_page_or_404()
+  goto_hash_or_ajax()
 }
 
 window.addEventListener('popstate', (e) => {
-  get_page_or_404()
+  goto_hash_or_ajax()
 })
 
-function get_page_or_404() {
+function goto_hash_or_ajax() {
   let parsed_path = document.location.pathname
-  /*
-  //not sure if still needed after using static site and real pathnames instead of query hacks
-
-  const slash = /%2F/gi;
-  parsed_path = parsed_path.replace(slash, '/');
-  */
-  //const breakers = /&|fbclid/i; //not sure if still needed for fb
-  //parsed_path = parsed_path.split(breakers)[0];
-  //check if we're already on the same query
   if (parsed_path === index.last_q) {
     parseFragment()
   } else {
     index.last_q = parsed_path
-    let path_to_main = `${parsed_path} #main`
-    queued_content = $(`<div>`).load(path_to_main, function( response, status, xhr ) {
-      if ( status === "error" ) { layout_404(parsed_path, xhr, $(`#main`)) }
-      else {
-        queued_content = $(`#main`, queued_content.get(0)).html()
-        //console.log(queued_content)
-        find_page_from_index()
-        parseFragment()
-      }
-    })
+    try {
+      find_page_from_index()
+    }
+    catch (e) {
+      if (e instanceof index.Errs.Ind404) {
+        console.error(e.message)
+        layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+      } else { throw e }
+    }
   }
 }
 
 function find_page_from_index() {
-  if (index.ready_count === index.parts_sum) {
+  if (index.ready_count === index.categories.length) {
     $(`#nav .text`).removeClass(`current-page`)
 
     let path = document.location.pathname
@@ -86,37 +85,62 @@ function find_page_from_index() {
           layout_music()
           break
         default:
-          layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+          throw new index.Errs.Ind404
       }
     }
-    else if (path.length === 3) {
-      switch (path[1]) {
-        case "articles":
-          layout_articles_item(path[2])
-          break
-        case "gallery":
-          layout_gallery_item(path[2])
-          break
-        case "films":
-          layout_films_item(path[2])
-          break
-        case "music":
-          layout_music_item(path[2])
-          break
-        default:
-          layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+    else if ( path.length === 3 && is_indexed(path) ) {
+      if (just_landed || path[1] === `music`) {
+        layout_item(path)
+      }
+      else {
+        let path_to_main = `${document.location.pathname} #main`
+        queued_content = $(`<div>`).load(path_to_main, function( response, status, xhr ) {
+          if ( status === "error" ) { layout_404(document.location.pathname, xhr, $(`#main`)) }
+          else {
+            queued_content = $(`#main`, queued_content.get(0)).html()
+            layout_item(path)
+          }
+        })
       }
     }
     else {
-      layout_404(document.location.pathname, {status:"404", statusText:"error"}, $(`#main`))
+      throw new index.Errs.Ind404(`not found in index`)
     }
     init_spoilers()
+    just_landed = false
   }
   else {
     console.log("index not ready, trying again later")
     index.timer = index.timer*2
     setTimeout(function(){ find_page_from_index() }, index.timer)
   }
+
+  function layout_item(path) {
+    switch (path[1]) {
+      case "articles":
+        layout_articles_item(path[2])
+        break
+      case "gallery":
+        layout_gallery_item(path[2])
+        break
+      case "films":
+        layout_films_item(path[2])
+        break
+      case "music":
+        layout_music(path[2])
+        break
+      default:
+        throw new index.Errs.Ind404
+    }
+  }
+}
+function is_indexed(path) {
+  let filename = path[2].split(`.html`)[0]
+  if (!index[path[1]]) { return false }
+  for (let file of index[path[1]]) {
+    if (file.path === filename) { return true }
+  }
+  return false
 }
 
 function parseFragment() {
@@ -210,10 +234,14 @@ function layout_films() {
   populateFilmVP(by_date_reverse)
 }
 
-function layout_music() {
+function layout_music(item) {
   update_title_in_head(`Music`)
-  $(`#btn-films`).addClass(`current-page`)
-  $(`#main`).html(queued_content)
+  $(`#btn-music`).addClass(`current-page`)
+  let playlist = ""
+  for (let track of index.music) {
+    playlist = playlist+ `${track.title}<br>`
+  }
+  $(`#main`).html(playlist)
 }
 
 function layout_articles_item(path) {
@@ -349,32 +377,6 @@ function layout_films_item(path) {
     </div>
   `)
   load_comments()
-  update_title_in_head(item.title)
-}
-
-function layout_music_item(path) {
-  let item = get_index_item("music", path)
-  $(`#main`).html(`
-    <div class="post-wrap">
-      <div class="post base-container">
-        <div class="content">
-          <br>
-          ${queued_content}
-          <img src="/img/site/hbar.gif" class="hbar">
-          <h1>${item.title}</h1>
-          <hr>
-          <div class="metainfo center-children">
-            <div class="metaitem">
-              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
-            </div>
-          </div>
-          <br>
-          ${item.desc}
-        </div>
-      </div>
-      <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
-    </div>
-  `)
   update_title_in_head(item.title)
 }
 
@@ -526,33 +528,73 @@ function spoiler_button_html(button) {
     button.html(`Hide Spoiler`)
   }
 }
-var sc_w = undefined
+/* Soundcloud */
+const music_player = {
+  scw: undefined,
+  list: null,
+  current_track: null,
+  auto_next: true,
+  init: function() {
+    function filter_list(raw_list) {
+      let list = []
+      for (let t of raw_list) {
+        let picked = {
+          title: t.title,
+          date: t.release_date.split(`T`)[0],
+          tags: t.tag_list.split(` `),
+          path: t.permalink,
+          desc: t.description,
+          img: t.artwork_url,
+        }
+        list.push(picked)
+      }
+      this.list = list
+    }
+    function on_play() {
+      function update_current_track(index) {
+        this.current_track = index
+      }
+      scw.getCurrentSoundIndex(update_current_track.bind(this))
+      console.log(`playing ${this.current_track}`)
+    }
+    function on_finish() {
+      console.log(`finished`)
+      if (this.auto_next === false) {
+        this.scw.pause()
+        console.log(`auto_next is off`)
+      }
+    }
+    let scw = this.scw
+    //scw.getSounds(filter_list.bind(this))
+    scw.bind(SC.Widget.Events.PLAY, on_play.bind(this))
+    scw.bind(SC.Widget.Events.FINISH, on_finish.bind(this))
+  },
+  toggle: function() { this.scw.toggle() },
+  skip: function(n) { this.scw.skip(n) },
+}
+
 $.getScript( "https://w.soundcloud.com/player/api.js")
   .fail(function( data, textStatus, jqxhr ) {
     console.log(`Soundcloud API failed to load`)
     //layout_404(`Soundcloud API`, xhr, $(`#main`))
   })
   .done(function( data, textStatus, jqxhr ) {
-    $(`body`).append(`<iframe id="sc-widget" width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1094860567&color=%234444cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false"></iframe>`)
-    sc_w = SC.Widget('sc-widget')
-    sc_w.bind(SC.Widget.Events.PLAY, function() {
-      // get information about currently playing sound
-      sc_w.getCurrentSound(function(currentSound) {
-        console.log(currentSound.description)
-      })
+    $(`body`).append(`<iframe id="sc-widget" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/1094860567&color=%234444cc&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=false"></iframe>`)
+    let scw = music_player.scw = SC.Widget('sc-widget')
+    scw.bind(SC.Widget.Events.READY, function() {
+      music_player.init()
     })
   })
-const music_player = {
-  sync_state_sc: function() {},
-}
+
 var queued_content = null
+var just_landed = true
 $( document ).ready(function() {
   //console.log("Ready, location: " + document.location.pathname);
-  get_index_of(["articles", "gallery", "films", "music"])
+  index.load_indices()
   //index.last_q = document.location.pathname
   queued_content = $("#main").html() //saves the page's content
   $("body").load("/common.html", function() {
     layout_nav()
-    get_page_or_404()
+    goto_hash_or_ajax()
   })
 });

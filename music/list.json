@@ -1,12 +1,56 @@
 [
-  {
-    "title": "Cloudscape Theme",
-    "date": "2015-04-27",
-    "tags": [
-      "orchestral",
-      "soundtrack"
-    ],
-    "path": "cloudscape-theme",
-    "desc": "Kunli Zhan's soundtrack score made to accompany his film, Cloudscape. The Gemseeker bird has his eyes on the great gemstone, only to find that it is actually on the back of the immense Sky Whale. Will he catch his prize through the clouds?"
-  }
+    {
+        "title": "Cloudscape Theme",
+        "date": "2014-10-05",
+        "tags": [
+            "Orchestral",
+            "Soundtrack",
+            "Cloudscape"
+        ],
+        "path": "cloudscape-theme",
+        "desc": "Kunli Zhan's soundtrack score made to accompany his film, Cloudscape. The Gemseeker bird has his eyes on the great gemstone, only to find that it is actually on the back of the immense Sky Whale. Will he catch his prize through the clouds?",
+        "img": "https://i1.sndcdn.com/artworks-iwgiDSi1WhRuta9b-2hYpPw-large.jpg"
+    },
+    {
+        "title": "First Theme For Endelphia",
+        "date": "2017-12-06",
+        "tags": [
+            "Dark"
+        ],
+        "path": "first-theme-for-endelphia",
+        "desc": "A theme track for a WIP project by Endelphia Games.\n\nLyrics:\n\nIn these timid eyes I beheld you, so strong yet weakened\nLike a candle's flame extinguishing in this unyielding rain  \n\nWhich is worse: hearing my bones twisting until they bend and snap\nOr this frozen void, left wondering if this can be called living\n\nThis revolting absence is draining everything from me\nIt's so co-o-old I’m afraid, for now I cannot feel a thing  \n\nI have known a world of creatures that would haunt all your dreams.\nEvery night they'd have their way with me, concealing my screams\n\nFall away from me bones, muscles, skin, and lastly my mask\nWhat remains of me, of us, of love, could we still find a way?",
+        "img": "https://i1.sndcdn.com/artworks-000267392600-q324p7-large.jpg"
+    },
+    {
+        "title": "Sudden Storm on the Seas",
+        "date": "2014-04-03",
+        "tags": [
+            "orchestral"
+        ],
+        "path": "sudden-storm-on-the-seas",
+        "desc": "Conditions on the sea change as swiftly as the wind blows.",
+        "img": null
+    },
+    {
+        "title": "Mangos Revenge v2",
+        "date": "2014-08-30",
+        "tags": [
+            "short",
+            "excerpt"
+        ],
+        "path": "mangos-revenge-v2",
+        "desc": "Excerpt from WIP soundtrack for animated short.",
+        "img": null
+    },
+    {
+        "title": "Mangos Revenge v1",
+        "date": "2014-08-28",
+        "tags": [
+            "short",
+            "exerpt"
+        ],
+        "path": "mangos-revenge-v1",
+        "desc": "Excerpt from WIP soundtrack for animated short.",
+        "img": null
+    }
 ]

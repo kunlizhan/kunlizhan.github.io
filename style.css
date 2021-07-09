@@ -514,7 +514,10 @@ nav a {
 
 /* Soundcloud */
 #sc-widget {
-  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
 }
 
 /* site-wide reusable styles */
