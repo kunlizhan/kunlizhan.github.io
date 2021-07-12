@@ -85,7 +85,7 @@ function find_page_from_index() {
           layout_music()
           break
         default:
-          throw new index.Errs.Ind404
+          throw new index.Errs.Ind404(`not found in index`)
       }
     }
     else if ( path.length === 3 && is_indexed(path) ) {
@@ -106,7 +106,6 @@ function find_page_from_index() {
     else {
       throw new index.Errs.Ind404(`not found in index`)
     }
-    init_spoilers()
     just_landed = false
   }
   else {
@@ -130,7 +129,7 @@ function find_page_from_index() {
         layout_music(path[2])
         break
       default:
-        throw new index.Errs.Ind404
+        throw new Error
     }
   }
 }
@@ -239,9 +238,13 @@ function layout_music(item) {
   $(`#btn-music`).addClass(`current-page`)
   let playlist = ""
   for (let track of index.music) {
-    playlist = playlist+ `${track.title}<br>`
+    playlist = playlist+ `<div class="track"><h2>${track.title}</h2></div>`
   }
-  $(`#main`).html(playlist)
+  $(`#main`).html(`
+    <div id="playlist">
+      ${playlist}
+    </div>
+    `)
 }
 
 function layout_articles_item(path) {
@@ -489,43 +492,6 @@ function load_comments() {
   }
   catch (err) {
     if (err.message !== "FB is not defined") { throw err }
-  }
-}
-
-function init_spoilers() {
-  $( document ).ready(function() {
-    $(`.spoiler-hide.spoiler-unrendered, .spoiler-show.spoiler-unrendered`).each(function( index ) {
-      let content = $( this ).html()
-      $(this).html(`<button class="spoiler-btn"></button>
-      <div class="spoiler-content">${content}</div>`)
-      let button = $(this).children(`.spoiler-btn`)
-      button.click(function(e) {
-        spoiler_toggle(button)
-      })
-      spoiler_button_html(button)
-      $(this).removeClass("spoiler-unrendered")
-    })
-  })
-}
-function spoiler_toggle(button) {
-  console.log(`toggle!`)
-  let parent = button.parent()
-  if (parent.hasClass(`spoiler-hide`)) {
-    parent.removeClass(`spoiler-hide`)
-    parent.addClass(`spoiler-show`)
-  }
-  else {
-    parent.removeClass(`spoiler-show`)
-    parent.addClass(`spoiler-hide`)
-  }
-  spoiler_button_html(button)
-}
-function spoiler_button_html(button) {
-  if (button.parent().hasClass(`spoiler-hide`)) {
-    button.html(`Show Spoiler`)
-  }
-  else {
-    button.html(`Hide Spoiler`)
   }
 }
 /* Soundcloud */

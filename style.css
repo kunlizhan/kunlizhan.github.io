@@ -559,16 +559,36 @@ q, blockquote {
   font-weight: 500;
   quotes: '\201c' '\201d';
 }
-q:before, blockquote::before { content: open-quote; }
-q:after, blockquote::after  { content: close-quote; }
+q::before, blockquote::before { content: open-quote; }
+q::after, blockquote::after  { content: close-quote; }
 .bold {font-weight: bold;}
 .italic {font-style: italic;}
-.spoiler-hide > .spoiler-content {
+
+.spoiler {
+border-style: solid;
+border-color: #44c;
+border-radius: 1em;
+padding: 1em;
+}
+.spoiler > label{
+  cursor: pointer;
+  color: #6af;
+}
+.spoiler > label::before {
+  content: "Show Spoilers";
+  margin-right: 0.5em;
+}
+.spoiler-content,
+.spoiler > input,
+.spoiler > label > i:nth-child(2),
+.spoiler > input:checked ~ label > i:nth-child(1) {
   display: none;
 }
-.spoiler-show > .spoiler-content {
+.spoiler > input:checked ~ .spoiler-content,
+.spoiler > input:checked ~ label > i:nth-child(2) {
   display: inline;
 }
+/* iframes */
 .responsive-iframe-container {
   padding:56.25% 0 0 0;
   position:relative;
