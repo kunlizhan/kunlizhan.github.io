@@ -59,6 +59,7 @@ function goto_hash_or_ajax() {
 
 function find_page_from_index() {
   if (index.ready_count === index.categories.length) {
+    index.timer = 100
     $(`#nav .text`).removeClass(`current-page`)
 
     let path = document.location.pathname
@@ -193,19 +194,19 @@ function layout_404(resource, xhr, div) {
 
 function layout_nav() {
   $("#nav .btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>');
-  $("#nav a").click( function(e) {ajaxA(e, $(this));} );
-  $(`.banner a`).click( function(e) {ajaxA(e, $(this));} );
+  $("#nav a").click( function(e) {ajaxA(e, $(this))} )
+  $(`.banner a`).click( function(e) {ajaxA(e, $(this))} )
   $('#nav .btn').hover(
     function() {
-      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(100,0);
-      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(100,1);
+      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(100,0)
+      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(100,1)
     },
     function() {
-      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(200,1);
-      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0);
+      $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(200,1)
+      $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0)
     }
   )
-  $(`.close_ol`).click( function(e) {e.preventDefault(); history.back();} );
+  $(`.close_ol`).click( function(e) {e.preventDefault(); history.back();} )
 }
 
 function layout_home() {
@@ -231,20 +232,6 @@ function layout_films() {
   $(`#main`).html(`<div id="art-vp" class="films"></div>`)
   let by_date_reverse = index.films.sort(sort_reverse_date)
   populateFilmVP(by_date_reverse)
-}
-
-function layout_music(item) {
-  update_title_in_head(`Music`)
-  $(`#btn-music`).addClass(`current-page`)
-  let playlist = ""
-  for (let track of index.music) {
-    playlist = playlist+ `<div class="track"><h2>${track.title}</h2></div>`
-  }
-  $(`#main`).html(`
-    <div id="playlist">
-      ${playlist}
-    </div>
-    `)
 }
 
 function layout_articles_item(path) {
@@ -295,7 +282,7 @@ function process_article_div({div, path, isThumb=false}) {
   if (isThumb) {
     //for thumb, make title a link
     div.prepend(`<h1><a href="/articles/${path}.html#top">${title}</a></h1><hr>`);
-    div.find(`h1 > a`).click( function(e) {ajaxA(e, $(this));} );
+    div.find(`h1 > a`).click( function(e) {ajaxA(e, $(this))} )
   } else {
     //for full post, make title and insert into metainfo a link to comments
     div.prepend(`<h1>${title}</h1><hr>`)
@@ -320,11 +307,11 @@ function process_article_div({div, path, isThumb=false}) {
 function layout_gallery_item(path) {
   let item = get_index_item("gallery", path)
 
-  let title = item.title;
+  let title = item.title
   let date = new Date(Date.parse(item.date))
-  let desc = ``;
+  let desc = ``
   if (typeof item.desc !== 'undefined' && item.desc !== '') {
-    desc = item.desc + `<hr>`;
+    desc = item.desc
   }
   $('#main').html(`
     <div class="show-wrap">
@@ -343,7 +330,7 @@ function layout_gallery_item(path) {
         </a>
       </div>
       <div class="base-container show-desc">
-        <span>${desc}</span>
+        <span>${desc}</span><hr>
         <div class="tags metainfo"><span>Tags: </span></div>
       </div>
       <div id="comments" class="base-container"> Loading Comments. This uses 3rd-party cookies.</div>
@@ -409,7 +396,7 @@ function populateFeed(array) {
         process_article_div({div: div, path: article.path, isThumb: true}) }
     })
   }
-  $(`.readMore a`).click( function(e) {ajaxA(e, $(this));} )
+  $(`.readMore a`).click( function(e) {ajaxA(e, $(this))} )
 }
 
 function populateArtVP(array) {
@@ -494,7 +481,114 @@ function load_comments() {
     if (err.message !== "FB is not defined") { throw err }
   }
 }
-/* Soundcloud */
+/* Music */
+function layout_music(item) {
+  $(`#main`).html(`
+    <div class="base-container"><i class="fas fa-circle-notch fa-spin"></i> Loading Music...</div>
+  `)
+  function layout_music_player(item) {
+    let list = music_player.list
+    if (!Object.is(list, null)) {
+      update_title_in_head(`Music`)
+      $(`#btn-music`).addClass(`current-page`)
+      let playlist = ""
+      for (let track of list) {
+        playlist = playlist+ `
+        <a href="/music/${track.path}.html">
+          <div class="track">
+              <span class="title">${track.title}</span>
+              <span class="duration">${get_time_string(track.duration)}</span>
+          </div>
+        </a>
+        `
+      }
+      $(`#main`).html(`
+        <div id="music-page" class="newsfeed">
+          <div id="song-container" class="base-container">
+            <div id="wave-container">
+              <svg id="waveform"
+                version="1.1"
+                baseProfile="full"
+                xmlns="http://www.w3.org/2000/svg">
+              </svg>
+              <div class="loading-ol">
+                <i class="fas fa-circle-notch fa-spin"></i> Loading Info...
+              </div>
+              <span id="music-time-now">current time</span><span id="music-time-end">total time</span>
+            </div>
+            <div id="song-info" class="content"></div>
+          </div>
+          <div id="playlist" class="base-container">
+            ${playlist}
+          </div>
+        </div>
+      `)
+      $("#playlist a").click( function(e) {ajaxA(e, $(this))} )
+      layout_song(item)
+    }
+    else {
+      console.log("music_player not ready, trying again later")
+      index.timer = index.timer*2
+      setTimeout(function(){ layout_music_player(item) }, index.timer)
+    }
+  }
+  function layout_song(item) {
+    let target = undefined
+    if (typeof item === "string") {
+      item = item.split(`.html`)[0]
+      for (let t of music_player.list) {
+        if (t.path === item) {
+          target = t
+          music_player.current_track = music_player.list.indexOf(t)
+          break
+        }
+      }
+    }
+    else { target = music_player.list[0] }
+
+    $.getJSON(target.wave, function(data) {
+      let scale = 2
+      let count = 0
+      let all_points = data.samples.length
+      let samples = ($(`#waveform`).width()/(scale*2))
+      let max_h = $(`#waveform`).height()
+      let peaks = ``
+      for (let i=0; i<samples; i++) {
+        let n = Math.trunc(i*all_points/samples)
+        let h = data.samples[n]/data.height*max_h
+        //if (data.samples[n]/data.height > 1) { console.log(data.samples[n]) }
+        peaks = peaks+`<rect width="${1*scale}" height="${h}" x="${i*scale*2}" y="${max_h-h}" fill="blue" />`
+        count++
+      }
+      $(`#waveform`).html(peaks)
+      $(`#waveform`).siblings(`.loading-ol`).addClass(`displayNone`)
+      $(`#music-time-end`).html(get_time_string(target.duration))
+    })
+    let date = new Date(Date.parse(target.date))
+    $(`#song-info`).html(`
+      <h1>${target.title}</h1>
+      <hr>
+      <div class="metainfo center-children">
+        <div class="metaitem">
+          <i class="fas fa-calendar-check" aria-hidden="true"></i> ${date.toDateString()}
+        </div>
+        <div class="metaitem">
+          <a href="https://soundcloud.com/kunli-zhan/${target.path}" target="_blank"><i class="fab fa-soundcloud"> </i>Soundcloud</a>
+        </div>
+      </div>
+      <div class="show-desc">
+        <span>${target.desc}</span><br><br>
+        <div class="tags metainfo"><span>Tags: </span></div>
+      </div>
+    `)
+    for (let tag of target.tags) {
+      $(`#song-info .tags`).append(`<div class="tag">${tag}</div>`);
+    }
+    music_player.skip(music_player.current_track)
+  }
+
+  layout_music_player(item)
+}
 const music_player = {
   scw: undefined,
   list: null,
@@ -511,6 +605,8 @@ const music_player = {
           path: t.permalink,
           desc: t.description,
           img: t.artwork_url,
+          duration: t.duration,
+          wave: t.waveform_url,
         }
         list.push(picked)
       }
@@ -531,12 +627,34 @@ const music_player = {
       }
     }
     let scw = this.scw
-    //scw.getSounds(filter_list.bind(this))
+    scw.getSounds(filter_list.bind(this))
     scw.bind(SC.Widget.Events.PLAY, on_play.bind(this))
     scw.bind(SC.Widget.Events.FINISH, on_finish.bind(this))
   },
   toggle: function() { this.scw.toggle() },
-  skip: function(n) { this.scw.skip(n) },
+  skip: function(n) { this.scw.skip(n); this.scw.seekTo(0); },
+  Err: {
+    MusicErr: class MusicErr {
+  		constructor(msg) {
+  			this.name = `MusicErr`
+        this.message = msg
+  		}
+    }
+  }
+}
+function get_time_string(ms) {
+  if (ms > 3600000 || typeof ms !== "number") {throw new music_player.Err.MusicErr(`duration invalid`)}
+  let n = ms
+  function div_n(divisor) {
+    n = Math.trunc(n/divisor)
+  }
+  div_n(1000) //to seconds
+  let sec = n % 60
+  sec = sec.toString().padStart(2, "0")
+  div_n(60) //to minutes
+  let min = n
+  min = min.toString()
+  return `${min}:${sec}`
 }
 
 $.getScript( "https://w.soundcloud.com/player/api.js")
