@@ -483,10 +483,10 @@ function load_comments() {
 }
 /* Music */
 function layout_music(item) {
-  $(`#main`).html(`
-    <div class="base-container"><i class="fas fa-circle-notch fa-spin"></i> Loading Music...</div>
-  `)
   function layout_music_player(item) {
+    $(`#main`).html(`
+      <div class="base-container"><i class="fas fa-circle-notch fa-spin"></i> Loading Music...</div>
+    `)
     let list = music_player.list
     if (!Object.is(list, null)) {
       update_title_in_head(`Music`)
@@ -511,10 +511,12 @@ function layout_music(item) {
                 baseProfile="full"
                 xmlns="http://www.w3.org/2000/svg">
               </svg>
-              <div class="loading-ol">
+              <div class="wave-ol">
                 <i class="fas fa-circle-notch fa-spin"></i> Loading Info...
               </div>
-              <span id="music-time-now">current time</span><span id="music-time-end">total time</span>
+              <span id="music-time-now">current time</span>
+              <span id="music-btn-toggle"><i class="fas fa-pause"></i></span>
+              <span id="music-time-end">total time</span>
             </div>
             <div id="song-info" class="content"></div>
           </div>
@@ -524,7 +526,9 @@ function layout_music(item) {
         </div>
       `)
       $("#playlist a").click( function(e) {ajaxA(e, $(this))} )
+      $(`#music-btn-toggle`).click( music_player.toggle.bind(music_player) )
       layout_song(item)
+      music_player.displayed = true
     }
     else {
       console.log("music_player not ready, trying again later")
@@ -539,13 +543,14 @@ function layout_music(item) {
       for (let t of music_player.list) {
         if (t.path === item) {
           target = t
-          music_player.current_track = music_player.list.indexOf(t)
           break
         }
       }
     }
-    else { target = music_player.list[0] }
-
+    else {
+      target = music_player.list[0]
+    }
+    music_player.current_track = music_player.list.indexOf(target)
     $.getJSON(target.wave, function(data) {
       let scale = 2
       let count = 0
@@ -561,7 +566,7 @@ function layout_music(item) {
         count++
       }
       $(`#waveform`).html(peaks)
-      $(`#waveform`).siblings(`.loading-ol`).addClass(`displayNone`)
+      $(`#waveform`).siblings(`.wave-ol`).addClass(`displayNone`)
       $(`#music-time-end`).html(get_time_string(target.duration))
     })
     let date = new Date(Date.parse(target.date))
@@ -584,16 +589,18 @@ function layout_music(item) {
     for (let tag of target.tags) {
       $(`#song-info .tags`).append(`<div class="tag">${tag}</div>`);
     }
-    music_player.skip(music_player.current_track)
+    music_player.goto(music_player.current_track)
   }
-
-  layout_music_player(item)
+  console.log($(`#song-info`).length)
+  if ($(`#song-info`).length) { layout_song(item) }
+  else { layout_music_player(item) }
 }
 const music_player = {
   scw: undefined,
   list: null,
+  displayed: false,
   current_track: null,
-  auto_next: true,
+  auto_next: false,
   init: function() {
     function filter_list(raw_list) {
       let list = []
@@ -623,16 +630,33 @@ const music_player = {
       console.log(`finished`)
       if (this.auto_next === false) {
         this.scw.pause()
+        this.goto(this.current_track)
+        this.scw.pause()
+        $(`#music-btn-toggle`).html(`<i class="fas fa-undo-alt"></i>`)
         console.log(`auto_next is off`)
       }
+    }
+    function on_play_progress(msg) {
+      $(`#music-time-now`).html(get_time_string(msg.currentPosition))
     }
     let scw = this.scw
     scw.getSounds(filter_list.bind(this))
     scw.bind(SC.Widget.Events.PLAY, on_play.bind(this))
     scw.bind(SC.Widget.Events.FINISH, on_finish.bind(this))
+    scw.bind(SC.Widget.Events.PLAY_PROGRESS, on_play_progress.bind(this))
   },
-  toggle: function() { this.scw.toggle() },
-  skip: function(n) { this.scw.skip(n); this.scw.seekTo(0); },
+  toggle: function() {
+    this.scw.toggle()
+    this.scw.isPaused(sync_btn)
+    function sync_btn(is_paused) {
+      if (is_paused) {
+        $(`#music-btn-toggle`).html(`<i class="fas fa-play"></i>`)
+      } else {
+        $(`#music-btn-toggle`).html(`<i class="fas fa-pause"></i>`)
+      }
+    }
+  },
+  goto: function(n) { this.scw.skip(n); this.scw.seekTo(0); },
   Err: {
     MusicErr: class MusicErr {
   		constructor(msg) {
