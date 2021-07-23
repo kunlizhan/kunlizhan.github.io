@@ -514,8 +514,8 @@ function layout_music(item) {
               <div class="wave-ol">
                 <i class="fas fa-circle-notch fa-spin"></i> Loading Info...
               </div>
-              <span id="music-time-now">current time</span>
-              <span id="music-btn-toggle"><i class="fas fa-pause"></i></span>
+              <span id="music-time-now">0:00</span>
+              <span id="music-btn-toggle"><i class="fas fa-play"></i></span>
               <span id="music-time-end">total time</span>
             </div>
             <div id="song-info" class="content"></div>
@@ -527,8 +527,12 @@ function layout_music(item) {
       `)
       $("#playlist a").click( function(e) {ajaxA(e, $(this))} )
       $(`#music-btn-toggle`).click( music_player.toggle.bind(music_player) )
+      $("body").on( "click", ".wave-seek", function() {
+        music_player.scw.seekTo($(this).attr(`data-seek`))
+        $(this).siblings().removeClass(`wave-playhead`)
+        $(this).addClass(`wave-playhead`)
+      } )
       layout_song(item)
-      music_player.displayed = true
     }
     else {
       console.log("music_player not ready, trying again later")
@@ -543,29 +547,42 @@ function layout_music(item) {
       for (let t of music_player.list) {
         if (t.path === item) {
           target = t
+          music_player.goto(music_player.list.indexOf(target))
+          music_player.scw.pause()
           break
         }
       }
+    }
+    else if (music_player.current_track !== null) {
+      target = music_player.list[music_player.current_track]
     }
     else {
       target = music_player.list[0]
     }
     music_player.current_track = music_player.list.indexOf(target)
+    music_player.sync_btn()
+
     $.getJSON(target.wave, function(data) {
       let scale = 2
       let count = 0
       let all_points = data.samples.length
-      let samples = ($(`#waveform`).width()/(scale*2))
+      let samples = ( ($(`#waveform`).width()-2)/(scale*2) )
       let max_h = $(`#waveform`).height()
       let peaks = ``
       for (let i=0; i<samples; i++) {
         let n = Math.trunc(i*all_points/samples)
         let h = data.samples[n]/data.height*max_h
+        let ms = i*target.duration/samples
         //if (data.samples[n]/data.height > 1) { console.log(data.samples[n]) }
-        peaks = peaks+`<rect width="${1*scale}" height="${h}" x="${i*scale*2}" y="${max_h-h}" fill="blue" />`
+        peaks = peaks
+          +`<g class="wave-seek" data-seek="${ms}" >`
+            +`<rect class="wave-peak" width="${1*scale}" height="${h}" x="${i*scale*2}" y="${max_h-h}" />`
+            +`<rect width="${1*scale}" height="${h}" x="${(i*scale*2)+2}" y="${max_h-h}" />`
+          +`</g>`
         count++
       }
       $(`#waveform`).html(peaks)
+      $(`#waveform *:first-child`).addClass(`wave-playhead`)
       $(`#waveform`).siblings(`.wave-ol`).addClass(`displayNone`)
       $(`#music-time-end`).html(get_time_string(target.duration))
     })
@@ -589,18 +606,22 @@ function layout_music(item) {
     for (let tag of target.tags) {
       $(`#song-info .tags`).append(`<div class="tag">${tag}</div>`);
     }
-    music_player.goto(music_player.current_track)
   }
-  console.log($(`#song-info`).length)
-  if ($(`#song-info`).length) { layout_song(item) }
+  console.log($(`#song-container`).length)
+
+  if ($(`#song-container`).length) {
+    layout_song(item)
+    music_player.scw.play()
+    music_player.sync_btn()
+  }
   else { layout_music_player(item) }
 }
 const music_player = {
   scw: undefined,
   list: null,
-  displayed: false,
   current_track: null,
   auto_next: false,
+  wave_color: [null,null],
   init: function() {
     function filter_list(raw_list) {
       let list = []
@@ -619,14 +640,14 @@ const music_player = {
       }
       this.list = list
     }
-    function on_play() {
+    function on_play(msg) {
       function update_current_track(index) {
         this.current_track = index
       }
       scw.getCurrentSoundIndex(update_current_track.bind(this))
       console.log(`playing ${this.current_track}`)
     }
-    function on_finish() {
+    function on_finish(msg) {
       console.log(`finished`)
       if (this.auto_next === false) {
         this.scw.pause()
@@ -635,9 +656,15 @@ const music_player = {
         $(`#music-btn-toggle`).html(`<i class="fas fa-undo-alt"></i>`)
         console.log(`auto_next is off`)
       }
+      reset_progress()
     }
     function on_play_progress(msg) {
       $(`#music-time-now`).html(get_time_string(msg.currentPosition))
+      this.sync_progress(msg.currentPosition)
+    }
+    function reset_progress() {
+      $(`#waveform .wave-playhead`).removeClass(`wave-playhead`)
+      $(`#waveform .wave-seek:first-child`).addClass(`wave-playhead`)
     }
     let scw = this.scw
     scw.getSounds(filter_list.bind(this))
@@ -647,16 +674,40 @@ const music_player = {
   },
   toggle: function() {
     this.scw.toggle()
-    this.scw.isPaused(sync_btn)
-    function sync_btn(is_paused) {
+    this.sync_btn()
+  },
+  goto: function(n) { this.scw.skip(n); this.scw.seekTo(0); },
+  sync_btn: function() {
+    this.scw.isPaused(function(is_paused) {
       if (is_paused) {
         $(`#music-btn-toggle`).html(`<i class="fas fa-play"></i>`)
       } else {
         $(`#music-btn-toggle`).html(`<i class="fas fa-pause"></i>`)
       }
+    })
+  },
+  sync_progress: function (ms) {
+    if ($(`#song-container`).length) {
+      let next_playhead = $(`#waveform .wave-playhead + .wave-seek`)
+      let next_ms = next_playhead.attr(`data-seek`)
+      $(`#waveform .wave-peak`).css(`fill`, ``)
+      if ( ms < next_ms ) {
+        if (this.wave_color[0] === null) {
+          this.wave_color[0] = rgb_parse($(`#waveform .wave-playhead`).children(`.wave-peak`).css(`fill`))
+          this.wave_color[1] = rgb_parse($(`#waveform .wave-playhead + .wave-seek`).children(`.wave-peak`).css(`fill`))
+        }
+        let last_playhead = $(`#waveform .wave-playhead`)
+        let last_ms = last_playhead.attr(`data-seek`)
+        let percent_to_next = (ms-last_ms)/(next_ms-last_ms)
+        next_playhead.children(`.wave-peak`).css(`fill`, rgb_tween(percent_to_next) )
+        //console.log(next_playhead.children(`.wave-peak`).css(`fill`))
+      }
+      else {
+        $(`#waveform .wave-playhead`).removeClass(`wave-playhead`)
+        next_playhead.addClass(`wave-playhead`)
+      }
     }
   },
-  goto: function(n) { this.scw.skip(n); this.scw.seekTo(0); },
   Err: {
     MusicErr: class MusicErr {
   		constructor(msg) {
@@ -679,6 +730,26 @@ function get_time_string(ms) {
   let min = n
   min = min.toString()
   return `${min}:${sec}`
+}
+function rgb_parse(string) {
+  string = string.split(`rgb(`)[1]
+  string = string.split(`)`)[0]
+  string = string.split(`, `)
+  let rgb = {}
+  for (let d in string) { rgb[d] = Number(string[d]) }
+  return rgb
+}
+function rgb_tween(percent) {
+  let c0 = music_player.wave_color[0]
+  let c1 = music_player.wave_color[1]
+  let r = {}
+  for (let d in c0) {
+    let range = c0[d]-c1[d]
+    r[d] = c1[d]+percent*range
+    //r[d] = Math.trunc((c0[d]+c1[d])/2)
+  }
+  //return `rgb(255, 0, 0)`
+  return `rgb(${r[0]}, ${r[1]}, ${r[2]})`
 }
 
 $.getScript( "https://w.soundcloud.com/player/api.js")

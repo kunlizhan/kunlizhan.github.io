@@ -549,12 +549,18 @@ nav a {
   width: 100%;
   height: 10em;
 }
+.wave-seek { cursor: pointer; }
+.wave-seek:hover > .wave-peak { fill: #fff; }
+.wave-seek > * { fill: #f000; }
+.wave-peak { fill: #6af; }
+.wave-playhead ~ g > .wave-peak { fill: #44c; }
 .wave-ol {
   position: relative;
   top: -5em;
 }
 #music-btn-toggle {
   font-size: 2em;
+  cursor: pointer;
 }
 #song-info {
   text-align: left;
@@ -570,10 +576,10 @@ nav a {
   text-align: center;
   overflow: hidden;
 }
-a {
+a, #music-btn-toggle {
   color: #6af;
 }
-a:hover {
+a:hover, #music-btn-toggle:hover {
   color: #bdf;
 }
 .error {
