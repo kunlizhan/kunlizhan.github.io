@@ -528,9 +528,9 @@ function layout_music(item) {
       $("#playlist a").click( function(e) {ajaxA(e, $(this))} )
       $(`#music-btn-toggle`).click( music_player.toggle.bind(music_player) )
       $("body").on( "click", ".wave-seek", function() {
-        music_player.scw.seekTo($(this).attr(`data-seek`))
         $(this).siblings().removeClass(`wave-playhead`)
         $(this).addClass(`wave-playhead`)
+        music_player.scw.seekTo($(this).attr(`data-seek`))
       } )
       layout_song(item)
     }
@@ -572,7 +572,7 @@ function layout_music(item) {
       for (let i=0; i<samples; i++) {
         let n = Math.trunc(i*all_points/samples)
         let h = data.samples[n]/data.height*max_h
-        let ms = i*target.duration/samples
+        let ms = Math.trunc(i*target.duration/samples)
         //if (data.samples[n]/data.height > 1) { console.log(data.samples[n]) }
         peaks = peaks
           +`<g class="wave-seek" data-seek="${ms}" >`
@@ -622,6 +622,7 @@ const music_player = {
   current_track: null,
   auto_next: false,
   wave_color: [null,null],
+  wave_synced: false,
   init: function() {
     function filter_list(raw_list) {
       let list = []
@@ -688,23 +689,40 @@ const music_player = {
   },
   sync_progress: function (ms) {
     if ($(`#song-container`).length) {
-      let next_playhead = $(`#waveform .wave-playhead + .wave-seek`)
-      let next_ms = next_playhead.attr(`data-seek`)
-      $(`#waveform .wave-peak`).css(`fill`, ``)
-      if ( ms < next_ms ) {
-        if (this.wave_color[0] === null) {
-          this.wave_color[0] = rgb_parse($(`#waveform .wave-playhead`).children(`.wave-peak`).css(`fill`))
-          this.wave_color[1] = rgb_parse($(`#waveform .wave-playhead + .wave-seek`).children(`.wave-peak`).css(`fill`))
-        }
+      if (this.wave_synced) {
+        let next_playhead = $(`#waveform .wave-playhead + .wave-seek`)
+        let next_ms = next_playhead.attr(`data-seek`)
         let last_playhead = $(`#waveform .wave-playhead`)
         let last_ms = last_playhead.attr(`data-seek`)
-        let percent_to_next = (ms-last_ms)/(next_ms-last_ms)
-        next_playhead.children(`.wave-peak`).css(`fill`, rgb_tween(percent_to_next) )
-        //console.log(next_playhead.children(`.wave-peak`).css(`fill`))
+        $(`#waveform .wave-peak`).css(`fill`, ``)
+        if ( ms < next_ms ) {
+          if (this.wave_color[0] === null) {
+            this.wave_color[0] = rgb_parse($(`#waveform .wave-playhead`).children(`.wave-peak`).css(`fill`))
+            this.wave_color[1] = rgb_parse($(`#waveform .wave-playhead + .wave-seek`).children(`.wave-peak`).css(`fill`))
+          }
+          let percent_to_next = (ms-last_ms)/(next_ms-last_ms)
+          next_playhead.children(`.wave-peak`).css(`fill`, rgb_tween(percent_to_next) )
+          //console.log(next_playhead.children(`.wave-peak`).css(`fill`))
+        }
+        else {
+          last_playhead.removeClass(`wave-playhead`)
+          next_playhead.addClass(`wave-playhead`)
+          next_ms = $(`#waveform .wave-playhead + .wave-seek`).attr(`data-seek`)
+          if (ms > next_ms) {
+            this.wave_synced = false
+          }
+        }
       }
       else {
-        $(`#waveform .wave-playhead`).removeClass(`wave-playhead`)
-        next_playhead.addClass(`wave-playhead`)
+        $(`#waveform g`).each(function() {
+          let this_ms = $(this).attr(`data-seek`)
+          if (this_ms > ms) {
+            $(`#waveform .wave-playhead`).removeClass(`wave-playhead`)
+            $(this).prev().addClass(`wave-playhead`)
+            return false
+          }
+        })
+        this.wave_synced = true
       }
     }
   },
