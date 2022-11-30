@@ -22,5 +22,16 @@
     "path": "CRIB",
     "desc": "An animated short about a Badger's attempts to build a CRIB. Created by Chuck Loris Productions of Sheridan College, 2014.",
     "thumb": "crib_thumb.jpg"
+  },
+  {
+    "title": "Demo Reel",
+    "date": "2022-11-30",
+    "tags": [
+      "animation",
+      "compilation"
+    ],
+    "path": "DemoReel",
+    "desc": "Kunli Zhan's demo reel of animation projects.",
+    "thumb": "demo_thumb.jpg"
   }
 ]
