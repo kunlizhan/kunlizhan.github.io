@@ -8,7 +8,8 @@
     ],
     "path": "Cloudscape",
     "desc": "The Gemseeker bird has his eyes on the great gemstone, only to find that it is actually on the back of the immense Sky Whale. Will he catch his prize through the clouds?",
-    "thumb": "cloudscape_thumb.jpg"
+    "thumb": "cloudscape_thumb.jpg",
+    "duration": 70
   },
   {
     "title": "CRIB",
@@ -21,7 +22,8 @@
     ],
     "path": "CRIB",
     "desc": "An animated short about a Badger's attempts to build a CRIB. Created by Chuck Loris Productions of Sheridan College, 2014.",
-    "thumb": "crib_thumb.jpg"
+    "thumb": "crib_thumb.jpg",
+    "duration": 130
   },
   {
     "title": "Demo Reel",
@@ -31,7 +33,8 @@
       "compilation"
     ],
     "path": "DemoReel",
-    "desc": "Kunli Zhan's demo reel of animation projects. Includes footage from <i>Home: Adventures with Tip & Oh</i>, <i>Littlest Pet Shop</i>, <i><a href=\"/films/Cloudscape\">Cloudscape</a></i>, and <i><a href=\"/films/CRIB\">CRIB</a></i>.",
-    "thumb": "demo_thumb.jpg"
+    "desc": "Kunli Zhan's demo reel of animation projects. Includes footage from <i>Home: Adventures with Tip & Oh</i>, <i>Littlest Pet Shop</i>, <i><a href=\"/films/Cloudscape.html\" class=\"ajaxA\">Cloudscape</a></i>, and <i><a href=\"/films/CRIB.html\" class=\"ajaxA\">CRIB</a></i>.",
+    "thumb": "demo_thumb.jpg",
+    "duration": 120
   }
 ]

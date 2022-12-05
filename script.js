@@ -25,7 +25,6 @@ function get_index_of(array) {
 
 function ajaxA(e, a) {
   e.preventDefault()
-
   let url = null
   if (a.attr('href') !== undefined) { url = a.attr('href') }
   else if (a.attr('data-href') !== undefined) { url = a.attr('data-href') }
@@ -79,7 +78,7 @@ function find_page_from_index() {
           break
         case "articles":
         case "articles.html":
-          layout_home()
+          layout_articles()
           break
         case "music":
         case "music.html":
@@ -193,9 +192,7 @@ function layout_404(resource, xhr, div) {
 }
 
 function layout_nav() {
-  $("#nav .btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>');
-  $("#nav a").click( function(e) {ajaxA(e, $(this))} )
-  $(`.banner a`).click( function(e) {ajaxA(e, $(this))} )
+  $("#nav .btn").prepend('<div class="btn-bg-dark"></div><div class="btn-bg-light"></div>')
   $('#nav .btn').hover(
     function() {
       $( this ).children(".btn-bg-dark").stop(true,false).fadeTo(100,0)
@@ -206,16 +203,26 @@ function layout_nav() {
       $( this ).children(".btn-bg-light").stop(true,false).fadeTo(300,0)
     }
   )
-  $(`.close_ol`).click( function(e) {e.preventDefault(); history.back();} )
+  $(`.close_ol`).click( function(e) {e.preventDefault(); history.back()} )
 }
 
 function layout_home() {
   update_title_in_head(`KunliZhan.com`)
   $(`#btn-home`).addClass(`current-page`)
-  $(`#main`).html(`<div class="newsfeed"></div>`)
-  let by_date_reverse = index.articles.sort(sort_reverse_date)
-  by_date_reverse = by_date_reverse.slice(0, 6)
-  populateFeed(by_date_reverse)
+  $(`#main`).html(`<div class="feed newsfeed"></div>`)
+  //get new items from each category
+  let max_display = 6
+  let categories = index.categories
+  let combined = [] //create proxy array to track which category each item is from while exposing date for sorting
+  categories.forEach( (cat) => combined = combined.concat(make_item_list_with_category_labels(index[cat], cat)) )
+  function make_item_list_with_category_labels(item_list, category) {
+    let items = item_list.sort(sort_reverse_date).slice(0, max_display)
+    let return_list = []
+    items.forEach( (i) => return_list.push({category: category, item: i, date: i.date}) )
+    return return_list
+  }
+  combined = combined.sort(sort_reverse_date).slice(0, max_display)
+  combined.forEach(item => $(`#main > .newsfeed`).append(make_Thumb_for_Home(item)) )
 }
 
 function layout_gallery() {
@@ -229,9 +236,19 @@ function layout_gallery() {
 function layout_films() {
   update_title_in_head(`Films`)
   $(`#btn-films`).addClass(`current-page`)
-  $(`#main`).html(`<div id="art-vp" class="films"></div>`)
+  $(`#main`).html(`<div id="art-vp" class="feed films"></div>`)
   let by_date_reverse = index.films.sort(sort_reverse_date)
-  populateFilmVP(by_date_reverse)
+  by_date_reverse.forEach(item => $(`#main > #art-vp`).append(make_Thumb_for_Film(item)) )
+}
+
+function layout_articles() {
+  update_title_in_head(`Articles`)
+  $(`#btn-articles`).addClass(`current-page`)
+  $(`#main`).html(`<div class="feed newsfeed"></div>`)
+  let by_date_reverse = index.articles.sort(sort_reverse_date)
+  by_date_reverse = by_date_reverse.slice(0, 6)
+  by_date_reverse.forEach(item => append_to_feed_article(item))
+
 }
 
 function layout_articles_item(path) {
@@ -252,10 +269,7 @@ function get_index_item(folder, path) {
   path = path.split(".")[0]
   for (let obj of index[folder]) {
     if (obj.path == path) {
-      let newObj = obj
-      let unixEpochNumber = Date.parse(newObj.date) //ISO 8601 to unix epoch
-      newObj.dateUnix = new Date(unixEpochNumber) //number to date object
-      return newObj
+      return obj
     }
   }
   return null
@@ -269,7 +283,7 @@ function process_article_div({div, path, isThumb=false}) {
     `
     <div class="metainfo center-children">
       <div class="metaitem">
-        <i class="fas fa-calendar-check" aria-hidden="true"></i> ${article.dateUnix.toDateString()}
+        <i class="fas fa-calendar-check" aria-hidden="true"></i> ${format_toDateString(article.date)}
       </div>
       <div class="metaitem">
         <i class="fas fa-clock" aria-hidden="true"></i>
@@ -281,8 +295,7 @@ function process_article_div({div, path, isThumb=false}) {
   );
   if (isThumb) {
     //for thumb, make title a link
-    div.prepend(`<h1><a href="/articles/${path}.html#top">${title}</a></h1><hr>`);
-    div.find(`h1 > a`).click( function(e) {ajaxA(e, $(this))} )
+    div.prepend(`<h1><a href="/articles/${path}.html#top" class="ajaxA">${title}</a></h1><hr>`)
   } else {
     //for full post, make title and insert into metainfo a link to comments
     div.prepend(`<h1>${title}</h1><hr>`)
@@ -308,7 +321,6 @@ function layout_gallery_item(path) {
   let item = get_index_item("gallery", path)
 
   let title = item.title
-  let date = new Date(Date.parse(item.date))
   let desc = ``
   if (typeof item.desc !== 'undefined' && item.desc !== '') {
     desc = item.desc
@@ -320,7 +332,7 @@ function layout_gallery_item(path) {
         <hr>
         <div class="metainfo center-children">
           <div class="metaitem">
-            <i class="fas fa-calendar-check" aria-hidden="true"></i> ${date.toDateString()}
+            <i class="fas fa-calendar-check" aria-hidden="true"></i> ${format_toDateString(item.date)}
           </div>
         </div>
       </div>
@@ -356,7 +368,7 @@ function layout_films_item(path) {
           <hr>
           <div class="metainfo center-children">
             <div class="metaitem">
-              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
+              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${format_toDateString(item.date)}
             </div>
           </div>
           <br>
@@ -370,36 +382,36 @@ function layout_films_item(path) {
   update_title_in_head(item.title)
 }
 
-function populateFeed(array) {
-  for (let article of array) {
-    let newPost = `
-      <div class="post-thumb base-container">
-        <div class="content"></div>
-        <div class="readMore">
-          <div>
-          <a href="/articles/${article.path}.html#top">
-          <i class="fas fa-file-alt" aria-hidden="true"></i> Full article</a>
-           &emsp14; &emsp14;
-          <a href="/articles/${article.path}.html#comments">
-          <i class="fas fa-comments" aria-hidden="true"></i> Comments</a>
-          </div>
-        </div>
-      </div>
-    `;
-    $(`#main > .newsfeed`).append(newPost);
-    let div = $(`.newsfeed > .post-thumb:last-child > .content`)
-    let loader_div = $(`<div>`).load(`/articles/${article.path}.html #main`, function( response, status, xhr ) {
-      if ( status === "error" ) { layout_404(article.path, xhr, div.parent()) }
-      else {
-        let loader_data = $(`#main`, loader_div.get(0)).html()
-        div.html(loader_data)
-        process_article_div({div: div, path: article.path, isThumb: true}) }
-    })
-  }
-  $(`.readMore a`).click( function(e) {ajaxA(e, $(this))} )
+function make_Thumb_for_Home(item_date_category) {
+  let thumb = null
+  let cat = item_date_category.category
+  let thumb_maker = Thumb_Makers[cat]
+  return thumb_maker(item_date_category.item)
+}
+
+const Thumb_Makers = {
+  articles: append_to_feed_article,
+  gallery: make_Thumb_for_Home_Gallery,
+  films: make_Thumb_for_Film,
+  music: thumbTest,
+}
+
+function thumbTest(item) {
+  console.log(`making thumb for ${item.path}`)
+}
+
+function make_Thumb_for_Home_Gallery(item) {
+  let path_to_show = `/gallery/${item.path}.html#top`
+  let newPost = `
+    <div class="post-thumb base-container art-item ajaxA" data-href="${path_to_show}">
+      <img src="/img/full/${item.full}" class="art-item"/>
+    </div>
+  `
+  return newPost
 }
 
 function populateArtVP(array) {
+  // attempt at making 2 columns at smallest break point
   let parity = 0
   let imgClass = "even"
   for (const item of array) {
@@ -411,47 +423,74 @@ function populateArtVP(array) {
     parity = (parity + 1) % 2
     let path_to_show = `/gallery/${item.path}.html#top`
     let newPost = `
-      <a href="${path_to_show}">
+      <a href="${path_to_show}" class="ajaxA">
         <img src="/img/full/${item.full}" class="art-item ${imgClass}"/>
       </a>
     `
     $(`#main > #art-vp`).append(newPost)
   }
-  $(`#main > #art-vp a`).click( function(e) {ajaxA(e, $(this))} )
 }
 
-function populateFilmVP(array) {
-  for (const item of array) {
-    let unixEpochNumber = Date.parse(item.date) //ISO 8601 to unix epoch
-    item.dateUnix = new Date(unixEpochNumber) //number to date object
-
-    let path_to_show = `/films/${item.path}.html#top`
-
-    let desc = item.desc
+function append_to_feed_article(article) {
     let newPost = `
-        <div class="post-thumb base-container art-item" data-href="${path_to_show}">
-          <img src="/img/thumb/${item.thumb}" class="video-thumb"/>
-          <div class="content">
-            <h1>${item.title}</h1><hr>
-              <div class="metainfo center-children">
-                <div class="metaitem">
-                  <i class="fas fa-calendar-check" aria-hidden="true"></i> ${item.dateUnix.toDateString()}
-                </div>
-              </div>
-              <br>
-            ${desc}
+      <div class="post-thumb base-container">
+        <div class="content"></div>
+        <div class="readMore">
+          <div>
+          <a href="/articles/${article.path}.html#top" class="ajaxA">
+          <i class="fas fa-file-alt" aria-hidden="true"></i> Full article</a>
+           &emsp14; &emsp14;
+          <a href="/articles/${article.path}.html#comments" class="ajaxA">
+          <i class="fas fa-comments" aria-hidden="true"></i> Comments</a>
           </div>
         </div>
-    `
-    $(`#main > #art-vp`).append(newPost)
-  }
-  $(`#main > #art-vp > .post-thumb`).click( function(e) {ajaxA(e, $(this))} )
+      </div>
+    `;
+    $(`#main > div`).append(newPost);
+    let div = $(`#main > div > .post-thumb:last-child > .content`)
+    let loader_div = $(`<div>`).load(`/articles/${article.path}.html #main`, function( response, status, xhr ) {
+      if ( status === "error" ) { layout_404(article.path, xhr, div.parent()) }
+      else {
+        let loader_data = $(`#main`, loader_div.get(0)).html()
+        div.html(loader_data)
+        process_article_div({div: div, path: article.path, isThumb: true}) }
+    })
+}
+
+function make_Thumb_for_Film(item) {
+  let path_to_show = `/films/${item.path}.html#top`
+  let newPost = `
+      <div class="post-thumb base-container art-item film-item ajaxA" data-href="${path_to_show}">
+        <div class="thumb-wrapper">
+          <img src="/img/thumb/${item.thumb}"/>
+          <div class="badge duration-badge">${get_time_string(item.duration*1000)}</div>
+        </div>
+        <div class="content">
+          <h1>${item.title}</h1>
+          <hr>
+          <div class="metainfo center-children">
+            <div class="metaitem">
+              <i class="fas fa-calendar-check" aria-hidden="true"></i> ${format_toDateString(item.date)}
+            </div>
+          </div>
+          <br>
+          <div class="desc">${item.desc}</div>
+        </div>
+      </div>
+  `
+  return newPost
 }
 
 function sort_reverse_date(a, b) {
   let a_date = Date.parse(a.date)
   let b_date = Date.parse(b.date)
   return b_date - a_date
+}
+
+function format_toDateString(date) {
+    let unixEpochNumber = Date.parse(date) //ISO 8601 to unix epoch
+    let dateUnix = new Date(unixEpochNumber) //number to date object
+    return dateUnix.toDateString()
 }
 
 function update_title_in_head(title) {
@@ -494,7 +533,7 @@ function layout_music(item) {
       let playlist = ""
       for (let track of list) {
         playlist = playlist+ `
-        <a href="/music/${track.path}.html">
+        <a href="/music/${track.path}.html" class="ajaxA">
           <div class="track">
               <span class="title">${track.title}</span>
               <span class="duration">${get_time_string(track.duration)}</span>
@@ -525,7 +564,6 @@ function layout_music(item) {
           </div>
         </div>
       `)
-      $("#playlist a").click( function(e) {ajaxA(e, $(this))} )
       $(`#music-btn-toggle`).click( music_player.toggle.bind(music_player) )
       $("body").on( "click", ".wave-seek", function() {
         $(this).siblings().removeClass(`wave-playhead`)
@@ -548,7 +586,6 @@ function layout_music(item) {
         if (t.path === item) {
           target = t
           music_player.goto(music_player.list.indexOf(target))
-          music_player.scw.pause()
           break
         }
       }
@@ -560,7 +597,7 @@ function layout_music(item) {
       target = music_player.list[0]
     }
     music_player.current_track = music_player.list.indexOf(target)
-    music_player.sync_btn()
+    music_player.sync_btn_is_ready ? music_player.sync_btn() : music_player.sync_btn_is_ready = true //disable first sync because browser will forbid auto start of audio
 
     $.getJSON(target.wave, function(data) {
       let scale = 2
@@ -586,13 +623,12 @@ function layout_music(item) {
       $(`#waveform`).siblings(`.wave-ol`).addClass(`displayNone`)
       $(`#music-time-end`).html(get_time_string(target.duration))
     })
-    let date = new Date(Date.parse(target.date))
     $(`#song-info`).html(`
       <h1>${target.title}</h1>
       <hr>
       <div class="metainfo center-children">
         <div class="metaitem">
-          <i class="fas fa-calendar-check" aria-hidden="true"></i> ${date.toDateString()}
+          <i class="fas fa-calendar-check" aria-hidden="true"></i> ${format_toDateString(target.date)}
         </div>
         <div class="metaitem">
           <a href="https://soundcloud.com/kunli-zhan/${target.path}" target="_blank"><i class="fab fa-soundcloud"> </i>Soundcloud</a>
@@ -611,8 +647,6 @@ function layout_music(item) {
 
   if ($(`#song-container`).length) {
     layout_song(item)
-    music_player.scw.play()
-    music_player.sync_btn()
   }
   else { layout_music_player(item) }
 }
@@ -623,6 +657,7 @@ const music_player = {
   auto_next: false,
   wave_color: [null,null],
   wave_synced: false,
+  sync_btn_is_ready: false,
   init: function() {
     function filter_list(raw_list) {
       let list = []
@@ -682,8 +717,10 @@ const music_player = {
     this.scw.isPaused(function(is_paused) {
       if (is_paused) {
         $(`#music-btn-toggle`).html(`<i class="fas fa-play"></i>`)
+        console.log(`button set to play`)
       } else {
         $(`#music-btn-toggle`).html(`<i class="fas fa-pause"></i>`)
+        console.log(`button set to pause`)
       }
     })
   },
@@ -794,4 +831,5 @@ $( document ).ready(function() {
     layout_nav()
     goto_hash_or_ajax()
   })
-});
+  $(`body`).on("click", ".ajaxA", function(e) {ajaxA(e, $(this))} )
+})

@@ -214,7 +214,66 @@ nav a {
 #main {
 }
 
-/* ?home */
+/* home */
+.newsfeed > .art-item {
+  cursor: pointer;
+}
+.newsfeed > .art-item::after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff0;
+  transition: all .8s linear;
+}
+
+.newsfeed > .art-item > img {
+  width: 100%;
+  max-height: 28em;
+  /* height changes after breakpoint @media 50em */
+  object-fit: cover;
+}
+.newsfeed > .film-item {
+  background-color: #004F;
+}
+.newsfeed > .film-item > .thumb-wrapper {
+  height: 25em; /* weird bottom gap if not specified, css spec bug? */
+}
+.newsfeed > .film-item > .thumb-wrapper > img {
+  width: 100%;
+  height: 25em;
+  object-fit: cover;
+}
+.newsfeed > .film-item > .thumb-wrapper > .duration-badge {
+  bottom: 0.2em;
+}
+.newsfeed > .film-item > .content {
+  padding: 0.3em 0 0.5em 0;
+  width: 100%;
+  display: flex;
+  bottom: 0;
+}
+
+.newsfeed > .art-item:hover::after {
+  background: #fff3;
+  transition: all .3s linear;
+}
+
+.newsfeed > .film-item > .content > .desc, .newsfeed > .film-item > .content > hr {
+  display: none;
+}
+.newsfeed > .film-item > .content > h1 {
+  margin: 0 0.5em 0;
+}
+.newsfeed > .film-item > .content > .metainfo {
+  width: auto;
+  margin: auto 0 auto auto;
+}
+
+/* articles */
 .newsfeed {
   display: grid;
   grid-template-columns: 1fr;
@@ -256,20 +315,21 @@ nav a {
   padding: 0.5em 1em 3em 1em;
   text-align: left;
 }
-.post-thumb > .content h1 {
+.post-thumb > .content:first-child > h1 {
   margin: 0 0 0 0;
 }
-.content h1 a {
+.post-thumb > .content:first-child > h1 > a {
+  pointer-events: auto;
   text-decoration: none;
 }
-#main img {
+.post-thumb > .content a {
+  pointer-events: none;
+  text-decoration: none;
+}
+.content img {
   max-width: 100%;
 }
 @media (min-width: 50em) {
-  .banner {
-    /*color: red;
-    padding: 3em 0 4em 0;*/
-  }
   .newsfeed {
     grid-template-columns: 1fr 0.62fr 1fr;
   }
@@ -299,11 +359,11 @@ nav a {
     grid-column: 1 / span 3;
   }
   #song-container { grid-column: span 2; }
+  .newsfeed > .art-item > img {
+    height: 28em;
+  }
 }
 @media (min-width: 70em) {
-  .newsfeed {
-    grid-template-columns: 1fr 0.62fr 1fr;
-  }
   .newsfeed > .post-thumb:nth-of-type(4n+2) {
     grid-column: 3 / span 1;
     /*color: red;*/
@@ -392,7 +452,26 @@ nav a {
   text-decoration: underline;
 }
 
-/* ?art */
+/* film */
+.film-item {
+}
+.film-item > .thumb-wrapper {
+  grid-area: 1 / 1 / 2 / 2;
+  position: relative;
+}
+.film-item > .thumb-wrapper > img {
+  max-width: 100%;
+}
+.thumb-wrapper > .duration-badge {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.25em;
+  margin: 0;
+}
+.film-item > .content {
+}
+
+/* gallery */
 #art-vp {/*
   display: grid;
   grid-template-columns: 1fr 1fr;*/
@@ -400,16 +479,18 @@ nav a {
   margin-bottom: 2em;
 }
 #art-vp .art-item {
+  z-index: 0;
   max-width: 49vw;
   margin: 0.5vw;
   /*border-style: solid;
   border-color: #44c;*/
   border-radius: 1em;
   box-shadow: 0 0 1.2vh 0.4vh #66e;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  transition-property: background-color, transform;
 }
 .art-item.even {
-  float: top;
+  float: left;
 }
 .art-item.odd {
   float: right;
@@ -448,10 +529,11 @@ nav a {
   }
 }
 #art-vp .art-item:hover {
-  position: relative;
   z-index: 1;
+  background-color: #004F;
   transform: scale(1.2, 1.2);
-  transition: transform 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+  transition: 0.3s cubic-bezier(0, 0.55, 0.45, 1);
+  transition-property: background-color, transform;
 }
 /* ?show */
 .show-wrap {
@@ -502,7 +584,7 @@ nav a {
   padding-top: 1em;
   text-align: left;
 }
-.show-desc .tag {
+.show-desc .tag, .badge {
   display: inline-block;
   border-style: solid;
   border-width: thin;
@@ -511,6 +593,10 @@ nav a {
   background-color: #003a;
   padding: 0em 0.5em 0.1em 0.5em;
   margin: 0em 0.2em 0em 0.2em;
+}
+.badge {
+  border-radius: 0.6em;
+  border: none;
 }
 .show-wrap #comments {
   grid-area: cm;
@@ -574,12 +660,11 @@ nav a {
   border-radius: 1em;
   background-color: #003a;
   text-align: center;
-  overflow: hidden;
 }
-a, #music-btn-toggle {
+a, #music-btn-toggle, .newsfeed > .film-item > .content > h1 {
   color: #6af;
 }
-a:hover, #music-btn-toggle:hover {
+a:hover, #music-btn-toggle:hover, .newsfeed > .film-item:hover > .content > h1 {
   color: #bdf;
 }
 .error {
